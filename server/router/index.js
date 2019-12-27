@@ -9,7 +9,7 @@ const { uploads, verifyToken } = require('../config')
 
 router.post('/user/register', user.register)
 router.post('/user/login', user.login)
-router.get('/user/info', user.info)
+router.get('/user/info', verifyToken, user.info)
 
 // 上传图片
 const uploadImg = uploads('img')

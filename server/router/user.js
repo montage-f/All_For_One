@@ -67,13 +67,6 @@ module.exports = {
     async info(ctx, next) {
         const { request, response } = ctx
         const { headers: { token } } = request
-        if (!token) {
-            response.body = {
-                msgCode: 404,
-                message: '请先登录用户',
-            }
-            return
-        }
         const { username, img } = await User.findOne({ token })
         response.body = {
             msgCode: 200,
