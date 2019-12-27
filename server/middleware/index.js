@@ -3,5 +3,6 @@
  */
 const bodyparser = require('koa-bodyparser')
 module.exports = (app) => {
-    app.use(bodyparser())
+    // 支持文件上传
+    app.use(bodyparser({ multipart: true }))
 }

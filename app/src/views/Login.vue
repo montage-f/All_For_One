@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import { mapMutations } from 'vuex'
     import { Field, Button, Icon, Overlay, Toast } from 'vant'
 
     export default {
@@ -57,6 +58,11 @@
         },
         computed: {},
         methods: {
+            ...mapMutations(
+                [
+                    'setUserInfo',
+                ],
+            ),
             // 注册用户
             async registerUser() {
                 let { msgCode, message, data } = await this.$http.post('/user/register', {
@@ -66,6 +72,8 @@
                 if (msgCode === 200) {
                     Toast.success(message)
                     this.$storage.set('userInfo', data)
+                    // 也将userInfo的信息, 放到状态管理里面
+                    this.setUserInfo(data)
                     this.$router.push('/')
                 }
                 Toast.fail(message)
@@ -79,6 +87,7 @@
                 if (msgCode === 200) {
                     Toast.success(message)
                     this.$storage.set('userInfo', data)
+                    this.setUserInfo(data)
                     this.$router.push('/')
                 }
                 Toast.fail(message)

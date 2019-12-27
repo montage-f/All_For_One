@@ -4,9 +4,15 @@
 const Router = require('koa-router')
 const router = new Router()
 const user = require('./user')
+const upload = require('./upload')
+const { uploads, verifyToken } = require('../config')
 
 router.post('/user/register', user.register)
 router.post('/user/login', user.login)
+
+// 上传图片
+const uploadImg = uploads('img')
+router.post('/upload/img', verifyToken, uploadImg.single('file'), upload.img)
 
 module.exports = (app) => {
     app.use(router.routes())

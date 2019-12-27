@@ -16,14 +16,16 @@ module.exports = {
                     message: '该用户还未注册!',
                 }
             } else {
+                const { _id } = user
                 const token = jwt.sign({ username, password })
-                await User.updateOne({ username, password }, { token })
+                await User.updateOne({ _id }, { token })
                 response.body = {
                     msgCode: 200,
                     message: '登录成功',
                     data: {
                         token,
                         username,
+                        userId: _id,
                     },
                 }
             }
@@ -37,12 +39,14 @@ module.exports = {
             const user = await User.findOne({ username })
             if (!user) {
                 const token = jwt.sign({ username, password })
-                await User.create({ username, password, token })
+                // 拿到用户id, 并返回给前端
+                const { _id } = await User.create({ username, password, token })
                 response.body = {
                     msgCode: 200,
                     message: '注册成功!',
                     data: {
                         username,
+                        userId: _id,
                         token,
                     },
                 }
