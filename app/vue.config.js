@@ -7,6 +7,13 @@ const pxtorem = require('postcss-pxtorem');
 module.exports = {
     outputDir: 'docs',
     publicPath: '/',
+    devServer: {
+        proxy: {
+            '/': {
+                target: 'http://localhost:3000',
+            },
+        },
+    },
     css: {
         loaderOptions: {
             postcss: {

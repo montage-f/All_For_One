@@ -8,9 +8,10 @@
             ></Field>
             <Field v-model="password"
                    left-icon="goods-collect-o"
+                   type="password"
                    placeholder="请输入密码"
             ></Field>
-            <Button>L O G I N</Button>
+            <Button @click="login">L O G I N</Button>
         </div>
         <div class="footer">
             <Icon name="scan"></Icon>
@@ -25,6 +26,7 @@
                 ></Field>
                 <Field v-model="password"
                        left-icon="goods-collect-o"
+                       type="password"
                        placeholder="请输入密码"
                 ></Field>
                 <Button @click="registerUser">R E G I S T E R</Button>
@@ -34,7 +36,7 @@
 </template>
 
 <script>
-    import { Field, Button, Icon, Overlay } from 'vant'
+    import { Field, Button, Icon, Overlay, Toast } from 'vant'
 
     export default {
         name: 'Login',
@@ -57,10 +59,29 @@
         methods: {
             // 注册用户
             async registerUser() {
-                let { msgCode, message, data } = this.$http.post('/user/register', {
+                let { msgCode, message, data } = await this.$http.post('/user/register', {
                     username: this.username,
                     password: this.password,
                 })
+                if (msgCode === 200) {
+                    Toast.success(message)
+                    this.$storage.set('userInfo', data)
+                    this.$router.push('/')
+                }
+                Toast.fail(message)
+            },
+            // 登录
+            async login() {
+                let { msgCode, message, data } = await this.$http.post('/user/login', {
+                    username: this.username,
+                    password: this.password,
+                })
+                if (msgCode === 200) {
+                    Toast.success(message)
+                    this.$storage.set('userInfo', data)
+                    this.$router.push('/')
+                }
+                Toast.fail(message)
             },
         },
     }
@@ -123,6 +144,8 @@
 
             .van-icon {
                 margin-left: 10px;
+                line-height: 30px;
+                font-size: 20px;
             }
         }
     }
