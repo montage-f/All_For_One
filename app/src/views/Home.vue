@@ -2,18 +2,17 @@
     <div class="Home">
         <div class="header">
             <Uploader
-                v-if="!userInfo.img"
                 :max-count="1"
                 :before-read="beforeRead"
                 :after-read="afterRead"
-            ></Uploader>
-            <VanImage
-                v-else
-                round
-                width="100px"
-                height="100px"
-                :src="userInfo.img"
-            ></VanImage>
+            >
+                <VanImage
+                    round
+                    width="100px"
+                    height="100px"
+                    :src="userInfo.img"
+                ></VanImage>
+            </Uploader>
             <div class="user">
                 {{ userInfo.username }}
             </div>
@@ -25,9 +24,8 @@
 
 <script>
     // @ is an alias to /src
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
     import { Image, Uploader, Toast } from 'vant'
-    import imgSrc from '../assets/img/home-bg.jpg'
 
     export default {
         name: 'Home',
@@ -37,9 +35,7 @@
             Uploader,
         },
         data() {
-            return {
-                imgSrc,
-            }
+            return {}
         },
         computed: {
             ...mapState({
@@ -47,6 +43,9 @@
             }),
         },
         methods: {
+            ...mapActions([
+                'getUserInfo',
+            ]),
             // 上传文件校验
             beforeRead(file) {
                 const { type } = file
@@ -65,6 +64,7 @@
                 let { msgCode, message } = await this.$http.post('/upload/img', form)
                 if (msgCode === 200) {
                     Toast.success(message)
+                    this.getUserInfo()
                 } else {
                     Toast.fail(message)
                 }
@@ -91,12 +91,6 @@
 
             .van-image {
                 margin-bottom: 20px;
-            }
-
-            .van-uploader {
-                /deep/ .van-uploader__upload {
-                    border-radius: 50%;
-                }
             }
         }
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { storage } from '../config'
+import { storage, http } from '../config'
+import { Toast } from 'vant'
 
 Vue.use(Vuex)
 
@@ -13,5 +14,15 @@ export default new Vuex.Store({
             state.userInfo = params
         },
     },
-    actions: {},
+    actions: {
+        async getUserInfo({ commit }) {
+            const { msgCode, data, message } = await http.get('/user/info')
+            if (msgCode === 200) {
+                commit('setUserInfo', data)
+            } else {
+                Toast.fail(message)
+            }
+            
+        },
+    },
 })

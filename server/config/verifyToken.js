@@ -10,12 +10,16 @@ module.exports = async (ctx, next) => {
             // 如果验证没有通过, 则会报错
             jwt.verify(token)
             await next()
+        } else {
+            response.body = {
+                msgCode: 404,
+                message: '还未登录, 请登录',
+            }
         }
     } catch (e) {
         response.body = {
             msgCode: 404,
-            message: '请重新登录',
+            message: '验证不通过, 请重新登录',
         }
-        console.log(e)
     }
 }

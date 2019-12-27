@@ -10,7 +10,7 @@ module.exports = {
         try {
             const { filename } = file
             // 更新数据库
-            await User.updateOne({ token }, { img: `http://127.0.0.1:3000/assets/img/${ filename }` })
+            await User.updateOne({ token }, { img: `http://127.0.0.1:3000/img/${ filename }` })
             response.body = {
                 msgCode: 200,
                 message: '上传成功',

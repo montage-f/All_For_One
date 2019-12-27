@@ -63,4 +63,25 @@ module.exports = {
             }
         }
     },
+    // 获取用户信息
+    async info(ctx, next) {
+        const { request, response } = ctx
+        const { headers: { token } } = request
+        if (!token) {
+            response.body = {
+                msgCode: 404,
+                message: '请先登录用户',
+            }
+            return
+        }
+        const { username, img } = await User.findOne({ token })
+        response.body = {
+            msgCode: 200,
+            message: '用户信息已更新',
+            data: {
+                username,
+                img,
+            },
+        }
+    },
 }

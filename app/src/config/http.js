@@ -4,6 +4,7 @@
 import axios from 'axios'
 import router from '../router'
 import { storage } from '../config'
+import { Toast } from 'vant'
 
 const instance = axios.create()
 
@@ -11,10 +12,12 @@ const instance = axios.create()
 instance.interceptors.request.use(
     (config) => {
         const userInfo = storage.get('userInfo')
-        const { token } = userInfo
-        if (token) {
-            // 将token放入请求头中
-            config.headers['token'] = token
+        if(userInfo){
+            const { token } = userInfo
+            if (token) {
+                // 将token放入请求头中
+                config.headers['token'] = token
+            }
         }
         
         return config
@@ -33,6 +36,7 @@ instance.interceptors.response.use(
             // 404 代表着token验证验证失败
             case 404:
                 router.push('/login')
+                Toast.fail(message)
                 break
         }
         return data
