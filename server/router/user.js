@@ -16,7 +16,7 @@ module.exports = {
                     message: '该用户还未注册!',
                 }
             } else {
-                const { _id } = user
+                const { img } = user
                 const token = jwt.sign({ username, password })
                 await User.updateOne({ _id }, { token })
                 response.body = {
@@ -25,7 +25,7 @@ module.exports = {
                     data: {
                         token,
                         username,
-                        userId: _id,
+                        img,
                     },
                 }
             }
@@ -40,13 +40,11 @@ module.exports = {
             if (!user) {
                 const token = jwt.sign({ username, password })
                 // 拿到用户id, 并返回给前端
-                const { _id } = await User.create({ username, password, token })
+                await User.create({ username, password, token })
                 response.body = {
                     msgCode: 200,
                     message: '注册成功!',
                     data: {
-                        username,
-                        userId: _id,
                         token,
                     },
                 }

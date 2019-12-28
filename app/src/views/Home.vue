@@ -1,12 +1,16 @@
 <template>
     <div class="Home">
         <div class="header">
+            <div class="left-info">
+                <Icon name="bars" @click="showLeftPopup=true"></Icon>
+            </div>
             <Uploader
                 :max-count="1"
                 :before-read="beforeRead"
                 :after-read="afterRead"
             >
                 <VanImage
+                    v-if="userInfo.img"
                     round
                     width="100px"
                     height="100px"
@@ -46,12 +50,21 @@
                 </List>
             </div>
         </div>
+        <LeftPopup
+            :showLeftPopup="showLeftPopup"
+            @changeShowLeftPopup="changeShowLeftPopup"
+        ></LeftPopup>
     </div>
 </template>
 <script>
     // @ is an alias to /src
     import { mapState, mapActions } from 'vuex'
-    import { Image, Uploader, Toast, List } from 'vant'
+    import LeftPopup from '@/components/Home/LeftPopup'
+    import {
+        Image, Uploader,
+        Toast, List,
+        Icon,
+    } from 'vant'
 
     export default {
         name: 'Home',
@@ -60,12 +73,15 @@
             'VanImage': Image,
             Uploader,
             List,
+            Icon,
+            LeftPopup,
         },
         data() {
             return {
                 list: [],
                 loading: false,
                 finished: false,
+                showLeftPopup: false,
             }
         },
         computed: {
@@ -115,6 +131,9 @@
                     }
                 }, 500)
             },
+            changeShowLeftPopup(isShow) {
+                this.showLeftPopup = isShow
+            },
         },
     }
 </script>
@@ -135,6 +154,13 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            position: relative;
+
+            .left-info {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+            }
 
             .van-image {
                 margin-bottom: 20px;
