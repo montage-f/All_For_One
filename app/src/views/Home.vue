@@ -18,14 +18,40 @@
             </div>
         </div>
         <div class="content">
+            <div class="album-count">
+                共10个相册
+            </div>
+            <div class="album-list">
+                <List
+                    v-model="loading"
+                    :finished="finished"
+                    finished-text="没有更多了"
+                    @load="onLoad"
+                >
+                    <div class="album-item"
+                         v-for="item in list"
+                         :key="item">
+                        <div class="content">
+
+                        </div>
+                        <div class="footer">
+                            <span class="album-name">
+                                生活
+                            </span>
+                            <span class="photo-count">
+                                90
+                            </span>
+                        </div>
+                    </div>
+                </List>
+            </div>
         </div>
     </div>
 </template>
-
 <script>
     // @ is an alias to /src
     import { mapState, mapActions } from 'vuex'
-    import { Image, Uploader, Toast } from 'vant'
+    import { Image, Uploader, Toast, List } from 'vant'
 
     export default {
         name: 'Home',
@@ -33,9 +59,14 @@
             // 这里因为Image无法被编译, 所以重新给命名
             'VanImage': Image,
             Uploader,
+            List,
         },
         data() {
-            return {}
+            return {
+                list: [],
+                loading: false,
+                finished: false,
+            }
         },
         computed: {
             ...mapState({
@@ -69,6 +100,21 @@
                     Toast.fail(message)
                 }
             },
+            onLoad() {
+                // 异步更新数据
+                setTimeout(() => {
+                    for (let i = 0; i < 10; i++) {
+                        this.list.push(this.list.length + 1)
+                    }
+                    // 加载状态结束
+                    this.loading = false
+
+                    // 数据全部加载完成
+                    if (this.list.length >= 40) {
+                        this.finished = true
+                    }
+                }, 500)
+            },
         },
     }
 </script>
@@ -78,11 +124,12 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        background: url("../assets/img/home-bg.jpg");
+        background-size: cover;
 
         .header {
             height: 40%;
             overflow: hidden;
-            background: url("../assets/img/home-bg.jpg");
             background-size: cover;
             display: flex;
             align-items: center;
@@ -96,7 +143,61 @@
 
         .content {
             flex: 1;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+
+            .album-count {
+                padding: 0 20px;
+                text-align: right;
+                color: white;
+            }
+
+            .album-list {
+                flex: 1;
+                overflow: auto;
+
+                .van-list {
+                    display: flex;
+                    padding: 0 20px;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+
+                    .album-item {
+                        width: 160px;
+                        height: 180px;
+                        background: #fff;
+                        margin-bottom: 15px;
+                        border-radius: 5px;
+                        display: flex;
+                        flex-direction: column;
+
+                        .content {
+                            flex: 1;
+                        }
+
+                        .footer {
+                            height: 20px;
+                            padding: 0 10px;
+                            border-top: 1px solid #ccc;
+                            box-sizing: border-box;
+                            line-height: 20px;
+                            display: flex;
+                            justify-content: space-between;
+                        }
+                    }
+
+                    /deep/ .van-list__finished-text {
+                        background: #fff;
+                        width: 100%;
+                    }
+
+
+                }
+            }
         }
 
     }
 </style>
+
