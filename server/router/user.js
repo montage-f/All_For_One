@@ -16,9 +16,9 @@ module.exports = {
                     message: '该用户还未注册!',
                 }
             } else {
-                const { img } = user
+                const { img = '' } = user
                 const token = jwt.sign({ username, password })
-                await User.updateOne({ _id }, { token })
+                await User.updateOne({ username, password }, { token })
                 response.body = {
                     msgCode: 200,
                     message: '登录成功',

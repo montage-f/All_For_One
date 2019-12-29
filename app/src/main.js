@@ -5,6 +5,7 @@ import store from './store'
 import config from './config'
 import 'amfe-flexible'
 
+
 Vue.use(config)
 
 

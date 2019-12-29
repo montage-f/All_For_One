@@ -31,11 +31,7 @@
         Sidebar,
         SidebarItem,
         Field,
-        Dialog,
     } from 'vant'
-    import Vue from 'vue'
-
-    Vue.use(Dialog)
 
     export default {
         name: 'LeftPopup',
