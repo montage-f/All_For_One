@@ -17,6 +17,11 @@ export default new Router({
             component: () => import('../views/Home.vue'),
         },
         {
+            path: '/photos',
+            name: 'photos',
+            component: () => import('../views/Photos.vue'),
+        },
+        {
             path: '/about',
             name: 'about',
             component: () => import('../views/About.vue'),

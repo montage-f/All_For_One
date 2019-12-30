@@ -34,10 +34,10 @@
                     finished-text="没有更多了"
                     @load="onLoad"
                 >
-                    <div class="album-item"
+                    <div class="item"
                          v-for="(item,index) in list"
                          :key="index"
-                         @click="showPhotos"
+                         @click="showPhotos(item.name)"
                          @touchstart="deleteAlbum(item.albumId)"
                          @touchend="cancelDeleteAlbum(item.albumId)"
                     >
@@ -179,13 +179,17 @@
             cancelDeleteAlbum() {
                 clearTimeout(this.timer)
             },
-            showPhotos() {
-
+            showPhotos(name) {
+                this.$router.push({
+                    path: '/photos',
+                    query: { name },
+                })
             },
         },
     }
 </script>
 <style lang="less" scoped>
+
     .Home {
         width: 100%;
         height: 100%;
@@ -238,29 +242,8 @@
                     flex-wrap: wrap;
                     justify-content: space-between;
 
-                    .album-item {
-                        width: 160px;
-                        height: 180px;
-                        background: #fff;
-                        margin-bottom: 15px;
-                        border-radius: 5px;
-                        display: flex;
-                        flex-direction: column;
-
-                        .content {
-                            flex: 1;
-                        }
-
-                        .footer {
-                            height: 20px;
-                            padding: 0 10px;
-                            border-top: 1px solid #ccc;
-                            box-sizing: border-box;
-                            line-height: 20px;
-                            display: flex;
-                            justify-content: space-between;
-                        }
-                    }
+                    // 在这里引入, 解析之后即是在.van-list下面的item
+                    @import "../assets/css/item";
 
                     /deep/ .van-list__finished-text {
                         background: #fff;
