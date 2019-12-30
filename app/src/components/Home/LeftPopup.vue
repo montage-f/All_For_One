@@ -19,7 +19,8 @@
             v-model="isAddAlbum"
             :overlay="false"
             title="添加相册"
-            show-cancel-button>
+            show-cancel-button
+            @confirm="confirm">
             <Field v-model="albumName" placeholder="请输入相册名称"></Field>
         </van-dialog>
     </div>
@@ -31,7 +32,9 @@
         Sidebar,
         SidebarItem,
         Field,
+        Toast,
     } from 'vant'
+    import { mapActions } from 'vuex'
 
     export default {
         name: 'LeftPopup',
@@ -56,10 +59,26 @@
         created() {
         },
         methods: {
+            ...mapActions([
+                'album/getAlbums',
+            ]),
             // 关闭左侧侧滑
             closeLeftPopup() {
                 this.$emit('changeShowLeftPopup', false)
                 this.isAddAlbum = false
+                this.albumName = ''
+            },
+            async confirm() {
+                const { msgCode, message } = await this.$http.post('/album/add', {
+                    name: this.albumName,
+                })
+                if (msgCode === 200) {
+                    Toast.success(message)
+                    this.closeLeftPopup()
+                    this['album/getAlbums']({ page: 1 })
+                } else {
+                    Toast.fail(message)
+                }
             },
         },
     }

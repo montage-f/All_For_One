@@ -23,24 +23,29 @@
         </div>
         <div class="content">
             <div class="album-count">
-                共10个相册
+                共{{ albumsCount }}个相册
             </div>
             <div class="album-list">
                 <List
                     v-model="loading"
                     :finished="finished"
+                    :immediate-check="false"
+                    :offset="10"
                     finished-text="没有更多了"
                     @load="onLoad"
                 >
                     <div class="album-item"
-                         v-for="item in list"
-                         :key="item">
+                         v-for="(item,index) in list"
+                         :key="index"
+                         @touchstart="deleteAlbum(item.albumId)"
+                         @touchend="cancelDeleteAlbum(item.albumId)"
+                    >
                         <div class="content">
 
                         </div>
                         <div class="footer">
                             <span class="album-name">
-                                生活
+                                {{ item.name }}
                             </span>
                             <span class="photo-count">
                                 90
@@ -63,7 +68,7 @@
     import {
         Image, Uploader,
         Toast, List,
-        Icon,
+        Icon, Dialog,
     } from 'vant'
 
     export default {
@@ -82,17 +87,37 @@
                 loading: false,
                 finished: false,
                 showLeftPopup: false,
+                page: 1,
+                timer: null,
             }
+        },
+        created() {
+            this.init()
         },
         computed: {
             ...mapState({
                 userInfo: (state) => state.userInfo,
+                albumsList: (state) => state.album.albumsInfo.list,
+                albumsCount: (state) => state.album.albumsInfo.count,
             }),
+        },
+        watch: {
+            albumsCount() {
+                this.init()
+            },
         },
         methods: {
             ...mapActions([
                 'getUserInfo',
+                'album/getAlbums',
             ]),
+            async init() {
+                // 当有相册的时候, 初始化初始数据
+                this.list = []
+                this.page = 1
+                this.finished = false
+                await this.onLoad()
+            },
             // 上传文件校验
             beforeRead(file) {
                 const { type } = file
@@ -116,23 +141,42 @@
                     Toast.fail(message)
                 }
             },
-            onLoad() {
-                // 异步更新数据
-                setTimeout(() => {
-                    for (let i = 0; i < 10; i++) {
-                        this.list.push(this.list.length + 1)
-                    }
-                    // 加载状态结束
-                    this.loading = false
-
-                    // 数据全部加载完成
-                    if (this.list.length >= 40) {
-                        this.finished = true
-                    }
-                }, 500)
+            async onLoad() {
+                this.loading = true
+                await this['album/getAlbums']({ page: this.page })
+                this.loading = false
+                for (let i of this.albumsList) {
+                    this.list.push(i)
+                }
+                this.page++
+                if (this.list.length >= this.albumsCount) {
+                    this.finished = true
+                }
             },
             changeShowLeftPopup(isShow) {
                 this.showLeftPopup = isShow
+            },
+            deleteAlbum(albumId) {
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                    Dialog.confirm({
+                        title: '是否删除该相册?',
+                        // 确认
+                    }).then(async () => {
+                        const { msgCode, message } = await this.$http.delete('/album/delete', { data: { albumId } })
+                        if (msgCode === 200) {
+                            Toast.success(message)
+                            this['album/getAlbums']({ page: 1 })
+                        } else {
+                            Toast.fail(message)
+                        }
+                    }).catch(() => {
+
+                    })
+                }, 1500)
+            },
+            cancelDeleteAlbum() {
+                clearTimeout(this.timer)
             },
         },
     }

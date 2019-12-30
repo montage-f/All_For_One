@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import { storage, http } from '../config'
 import { Toast } from 'vant'
 
+import album from './album'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -24,5 +26,8 @@ export default new Vuex.Store({
             }
             
         },
+    },
+    modules: {
+        album
     },
 })
