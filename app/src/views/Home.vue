@@ -37,6 +37,7 @@
                     <div class="album-item"
                          v-for="(item,index) in list"
                          :key="index"
+                         @click="showPhotos"
                          @touchstart="deleteAlbum(item.albumId)"
                          @touchend="cancelDeleteAlbum(item.albumId)"
                     >
@@ -177,6 +178,9 @@
             },
             cancelDeleteAlbum() {
                 clearTimeout(this.timer)
+            },
+            showPhotos() {
+
             },
         },
     }

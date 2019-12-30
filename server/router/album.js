@@ -63,6 +63,22 @@ module.exports = {
                 message: '删除失败',
             }
         }
-        
+    },
+    async update(ctx) {
+        const { request, response } = ctx
+        const { headers: { token }, body } = request
+        const { albumId, name } = body
+        const { nModified } = await Album.updateOne({ token, _id: albumId }, { name })
+        if (nModified) {
+            response.body = {
+                msgCode: 200,
+                message: '相册名修改成功',
+            }
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '相册名修改失败',
+            }
+        }
     },
 }

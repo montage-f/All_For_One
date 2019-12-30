@@ -22,6 +22,7 @@ router.post('/upload/img', verifyToken, uploadImg.single('file'), upload.img)
 router.post('/album/add', album.add)
 router.get('/album/getAlbums', album.getAlbums)
 router.delete('/album/delete', album.delete)
+router.put('/album/update', album.update)
 
 module.exports = (app) => {
     app.use(router.routes())
