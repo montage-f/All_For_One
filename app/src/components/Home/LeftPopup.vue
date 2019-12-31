@@ -11,17 +11,31 @@
                 <Sidebar v-model="activeKey">
                     <SidebarItem
                         title="添加相册"
-                        @click="isAddAlbum=true" />
+                        @click="isAddAlbum=true"
+                    />
+                    <SidebarItem
+                        title="退出登录"
+                        @click="isLogOut=true"
+                    />
                 </Sidebar>
             </div>
         </Popup>
+
         <van-dialog
             v-model="isAddAlbum"
             :overlay="false"
             title="添加相册"
             show-cancel-button
-            @confirm="confirm">
+            @confirm="confirmAlbum">
             <Field v-model="albumName" placeholder="请输入相册名称"></Field>
+        </van-dialog>
+
+        <van-dialog
+            v-model="isLogOut"
+            :overlay="false"
+            title="退出登录"
+            show-cancel-button
+            @confirm="confirmLogOut">
         </van-dialog>
     </div>
 </template>
@@ -54,6 +68,7 @@
                 activeKey: 0,
                 isAddAlbum: false,
                 albumName: '',
+                isLogOut: false,
             }
         },
         created() {
@@ -66,9 +81,10 @@
             closeLeftPopup() {
                 this.$emit('changeShowLeftPopup', false)
                 this.isAddAlbum = false
+                this.isLogOut = false
                 this.albumName = ''
             },
-            async confirm() {
+            async confirmAlbum() {
                 const { msgCode, message } = await this.$http.post('/album/add', {
                     name: this.albumName,
                 })
@@ -79,6 +95,10 @@
                 } else {
                     Toast.fail(message)
                 }
+            },
+            confirmLogOut() {
+                this.$storage.remove('userInfo')
+                this.$router.push('/login')
             },
         },
     }
