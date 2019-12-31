@@ -1,7 +1,7 @@
 /**
  * Created by MonTage_fz on 2019/12/30
  */
-const { Album } = require('../db')
+const { Album, Photos } = require('../db')
 module.exports = {
     async add(ctx) {
         const { request, response } = ctx
@@ -30,18 +30,23 @@ module.exports = {
     async getAlbums(ctx) {
         const { request, response } = ctx
         const { headers: { token }, query } = request
-        const { page = 1 } = query
-        const albums = await Album.find({ token }).skip((page - 1) * 6).limit(6)
+        const { pageIndex, pageSize } = query
+        const albums = await Album.find({ token }).skip((pageIndex - 1) * pageSize).limit(+pageSize)
+        console.log(albums)
         // 获取到Album里面的个数
         const count = await Album.countDocuments({ token })
+        // 在map里面使用async的时候, 他返回的每一项其实是一个promise对象,
+        // 那么我们需要使用Promise.all来包裹一下, 更方便拿出他的数据
+        const list = await Promise.all(albums.map(async item => ({
+            // 相册的名字
+            name: item.name,
+            albumId: item._id,
+            photoCount: await Photos.countDocuments({ token, albumId: item._id }),
+        })))
         response.body = {
             msgCode: 200,
             data: {
-                list: albums.map(item => ({
-                    // 相册的名字
-                    name: item.name,
-                    albumId: item._id,
-                })),
+                list,
                 // 相册的个数
                 count,
             },

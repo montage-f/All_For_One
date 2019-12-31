@@ -37,7 +37,7 @@
                     <div class="item"
                          v-for="(item,index) in list"
                          :key="index"
-                         @click="showPhotos(item.name)"
+                         @click="showPhotos(item)"
                          @touchstart="deleteAlbum(item.albumId)"
                          @touchend="cancelDeleteAlbum(item.albumId)"
                     >
@@ -49,7 +49,7 @@
                                 {{ item.name }}
                             </span>
                             <span class="photo-count">
-                                90
+                                {{ item.photoCount }}
                             </span>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
 </template>
 <script>
     // @ is an alias to /src
-    import { mapState, mapActions } from 'vuex'
+    import { mapState, mapActions, mapMutations } from 'vuex'
     import LeftPopup from '@/components/Home/LeftPopup'
     import {
         Image, Uploader,
@@ -88,7 +88,7 @@
                 loading: false,
                 finished: false,
                 showLeftPopup: false,
-                page: 1,
+                pageIndex: 1,
                 timer: null,
             }
         },
@@ -111,6 +111,9 @@
             ...mapActions([
                 'getUserInfo',
                 'album/getAlbums',
+            ]),
+            ...mapMutations([
+                'album/setInfo',
             ]),
             async init() {
                 // 当有相册的时候, 初始化初始数据
@@ -144,7 +147,7 @@
             },
             async onLoad() {
                 this.loading = true
-                await this['album/getAlbums']({ page: this.page })
+                await this['album/getAlbums']({ pageIndex: this.pageIndex })
                 this.loading = false
                 for (let i of this.albumsList) {
                     this.list.push(i)
@@ -167,7 +170,7 @@
                         const { msgCode, message } = await this.$http.delete('/album/delete', { data: { albumId } })
                         if (msgCode === 200) {
                             Toast.success(message)
-                            this['album/getAlbums']({ page: 1 })
+                            this['album/getAlbums']({ pageIndex: 1, pageSize: 10 })
                         } else {
                             Toast.fail(message)
                         }
@@ -179,11 +182,10 @@
             cancelDeleteAlbum() {
                 clearTimeout(this.timer)
             },
-            showPhotos(name) {
-                this.$router.push({
-                    path: '/photos',
-                    query: { name },
-                })
+            showPhotos(albumInfo) {
+                console.log(albumInfo)
+                this.$router.push('/photos')
+                this['album/setInfo'](albumInfo)
             },
         },
     }
@@ -249,8 +251,6 @@
                         background: #fff;
                         width: 100%;
                     }
-
-
                 }
             }
         }

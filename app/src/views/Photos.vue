@@ -5,39 +5,157 @@
             <span class="back" @click="$router.go(-1)">
                 <Icon name="arrow-left"></Icon>
             </span>
-            <span class="title"> {{ photoName }}</span>
+            <div class="title" @click="isChangeAlbum('focus')">
+                <span v-if="changeAlbum">{{ albumName }}</span>
+                <Field
+                    v-else
+                    autofocus
+                    @blur="isChangeAlbum('blur')"
+                    v-model="albumValue" placeholder="请输入相册名"></Field>
+            </div>
+
         </div>
         <div class="content">
             <div class="add-photo">
-                <Uploader></Uploader>
+                <Uploader :after-read="afterRead"></Uploader>
             </div>
-            <div class="item">
-
+            <div class="item"
+                 v-for="item of list"
+                 :key="item.photoId"
+            >
+                <div class="content">
+                    <van-image
+                        width="100%"
+                        height="100%"
+                        fit="scale-down"
+                        :src="item.img">
+                    </van-image>
+                </div>
+                <div class="footer" @click="changePhotoName(item)">
+                    {{ item.photoName }}
+                </div>
             </div>
         </div>
+        <van-dialog
+            v-model="isShow"
+            title="修改相片名称"
+            show-cancel-button
+            @confirm="confirm"
+        >
+            <Field v-model="photoName" placeholder="请输入相片名"></Field>
+        </van-dialog>
     </div>
 </template>
 
 <script>
-    import { Icon, Uploader } from 'vant'
+    import { mapState, mapMutations } from 'vuex'
+    import { Icon, Uploader, Toast, Image, Field } from 'vant'
 
     export default {
         name: 'Photos',
         components: {
             Icon,
             Uploader,
+            'van-image': Image,
+            Field,
         },
         data() {
-            return {}
+            return {
+                list: [],
+                albumValue: '',
+                changeAlbum: true,
+                isShow: false,
+                photoName: '',
+                photoId: '',
+            }
         },
         created() {
+            this.initPhotos()
         },
         computed: {
-            photoName() {
-                return this.$route.query.name
+            ...mapState({
+                albumName: (state) => state.album.info.name,
+                albumId: (state) => state.album.info.albumId,
+            }),
+        },
+        methods: {
+            ...mapMutations(
+                [
+                    'album/setInfo',
+                ],
+            ),
+            async initPhotos() {
+                let { msgCode, data } = await this.$http.get('/photos/list', {
+                    params: {
+                        albumId: this.albumId,
+                        pageIndex: 1,
+                        pageSize: 10,
+                    },
+                })
+                if (msgCode === 200) {
+                    const { list } = data
+                    this.list = list
+                }
+            },
+            async afterRead(file) {
+                const formData = new FormData()
+                for (const key in file) {
+                    formData.append(key, file[key])
+                }
+                formData.append('albumId', this.albumId)
+                const { msgCode, message } = await this.$http.post('/photos/add', formData)
+                if (msgCode === 200) {
+                    Toast.success(message)
+                    this.initPhotos()
+                } else {
+                    Toast.fail(message)
+                }
+            },
+            async isChangeAlbum(type) {
+                switch (type) {
+                    case 'focus': {
+                        this.changeAlbum = false
+                        this.albumValue = this.albumName
+                        break
+                    }
+                    case 'blur': {
+                        this.changeAlbum = true
+                        const { msgCode, message } = await this.$http.put('/album/update', {
+                            albumId: this.albumId,
+                            name: this.albumValue,
+                        })
+                        if (msgCode === 200) {
+                            this['album/setInfo']({
+                                albumId: this.albumId,
+                                name: this.albumValue,
+                            })
+                            Toast.success(message)
+                        } else {
+                            Toast.fail(message)
+                        }
+                        break
+                    }
+                }
+            },
+            changePhotoName(item) {
+                const { photoName, photoId } = item
+                this.isShow = true
+                this.photoName = photoName
+                this.photoId = photoId
+            },
+            async confirm() {
+                const { msgCode, message } = await this.$http.put('/photos/update', {
+                    photoId: this.photoId,
+                    photoName: this.photoName,
+                })
+                if (msgCode === 200) {
+                    Toast.success(message)
+                    this.initPhotos()
+                } else {
+                    Toast.fail(message)
+                }
             },
         },
-        methods: {},
     }
 </script>
 
@@ -67,12 +185,15 @@
             }
         }
 
-        .content {
+        & > .content {
             flex: 1;
             display: flex;
             padding: 20px 20px;
             flex-wrap: wrap;
             justify-content: space-between;
+            align-content: flex-start;
+            overflow-y: auto;
+            font-size: 12px;
 
             .add-photo {
                 width: 160px;
@@ -106,6 +227,12 @@
             }
 
             @import "../assets/css/item";
+
+            .item {
+                .footer {
+                    justify-content: center;
+                }
+            }
         }
     }
 </style>

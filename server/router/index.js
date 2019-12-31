@@ -7,6 +7,7 @@ const router = new Router()
 const user = require('./user')
 const upload = require('./upload')
 const album = require('./album')
+const photos = require('./photos')
 
 const { uploads, verifyToken } = require('../config')
 
@@ -23,6 +24,11 @@ router.post('/album/add', album.add)
 router.get('/album/getAlbums', album.getAlbums)
 router.delete('/album/delete', album.delete)
 router.put('/album/update', album.update)
+
+// 相片
+router.get('/photos/list', photos.list)
+router.post('/photos/add', uploadImg.single('file'), photos.add)
+router.put('/photos/update',  photos.update)
 
 module.exports = (app) => {
     app.use(router.routes())

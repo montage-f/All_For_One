@@ -3,8 +3,10 @@
  */
 const User = require('./user')
 const Album = require('./album')
+const Photos = require('./photos')
 
 module.exports = {
     User,
-    Album
+    Album,
+    Photos,
 }

@@ -75,7 +75,7 @@
                 if (msgCode === 200) {
                     Toast.success(message)
                     this.closeLeftPopup()
-                    this['album/getAlbums']({ page: 1 })
+                    this['album/getAlbums']({ pageIndex: 1 })
                 } else {
                     Toast.fail(message)
                 }
