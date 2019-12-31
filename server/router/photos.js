@@ -4,11 +4,11 @@
 const { Photos } = require('../db')
 module.exports = {
     async list(ctx) {
-        const { request, response } = ctx
-        const { headers: { token }, query } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { query } = request
         const { albumId, pageIndex, pageSize } = query
-        const photos = await Photos.find({ token, albumId }).skip((pageIndex - 1) * pageSize).limit(+pageSize)
-        const count = await Photos.countDocuments({ token, albumId })
+        const photos = await Photos.find({ userId, albumId }).skip((pageIndex - 1) * pageSize).limit(+pageSize)
+        const count = await Photos.countDocuments({ userId, albumId })
         response.body = {
             msgCode: 200,
             data: {
@@ -22,10 +22,9 @@ module.exports = {
         }
     },
     async add(ctx) {
-        const { req, request, response } = ctx
-        const { headers: { token } } = request
+        const { req, response, userInfo: { userId } } = ctx
         const { file: { filename }, body: { albumId } } = req
-        const result = await Photos.findOne({ token, albumId, img: `http://127.0.0.1:3000/img/${ filename }` })
+        const result = await Photos.findOne({ userId, albumId, img: `http://127.0.0.1:3000/img/${ filename }` })
         if (result) {
             response.body = {
                 msgCode: 400,
@@ -34,7 +33,7 @@ module.exports = {
         } else {
             try {
                 await Photos.create({
-                    token,
+                    userId,
                     albumId,
                     photoName: filename,
                     img: `http://127.0.0.1:3000/img/${ filename }`,
@@ -52,10 +51,10 @@ module.exports = {
         }
     },
     async update(ctx) {
-        const { request, response } = ctx
-        const { headers: { token }, body } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { body } = request
         const { photoName, photoId } = body
-        const { nModified } = await Photos.updateOne({ token, _id: photoId }, { photoName })
+        const { nModified } = await Photos.updateOne({ userId, _id: photoId }, { photoName })
         if (nModified) {
             response.body = {
                 msgCode: 200,

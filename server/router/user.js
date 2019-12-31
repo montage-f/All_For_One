@@ -16,9 +16,8 @@ module.exports = {
                     message: '该用户还未注册!',
                 }
             } else {
-                const { img = '' } = user
-                const token = jwt.sign({ username, password })
-                await User.updateOne({ username, password }, { token })
+                const { img = '', _id: userId } = user
+                const token = jwt.sign({ username, password, userId })
                 response.body = {
                     msgCode: 200,
                     message: '登录成功',
@@ -38,9 +37,9 @@ module.exports = {
         if (username && password) {
             const user = await User.findOne({ username })
             if (!user) {
-                const token = jwt.sign({ username, password })
                 // 拿到用户id, 并返回给前端
-                await User.create({ username, password, token })
+                const { _id: userId } = await User.create({ username, password })
+                const token = jwt.sign({ username, password, userId })
                 response.body = {
                     msgCode: 200,
                     message: '注册成功!',
@@ -63,9 +62,9 @@ module.exports = {
     },
     // 获取用户信息
     async info(ctx, next) {
-        const { request, response } = ctx
-        const { headers: { token } } = request
-        const { username, img } = await User.findOne({ token })
+        const { response, userInfo } = ctx
+        const { userId } = userInfo
+        const { username, img } = await User.findOne({ _id: userId })
         response.body = {
             msgCode: 200,
             message: '用户信息已更新',

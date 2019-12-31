@@ -20,15 +20,15 @@ const uploadImg = uploads('img')
 router.post('/upload/img', verifyToken, uploadImg.single('file'), upload.img)
 
 // 相册
-router.post('/album/add', album.add)
-router.get('/album/getAlbums', album.getAlbums)
-router.delete('/album/delete', album.delete)
-router.put('/album/update', album.update)
+router.post('/album/add', verifyToken, album.add)
+router.get('/album/getAlbums', verifyToken, album.getAlbums)
+router.delete('/album/delete', verifyToken, album.delete)
+router.put('/album/update', verifyToken, album.update)
 
 // 相片
-router.get('/photos/list', photos.list)
-router.post('/photos/add', uploadImg.single('file'), photos.add)
-router.put('/photos/update',  photos.update)
+router.get('/photos/list', verifyToken, photos.list)
+router.post('/photos/add', verifyToken, uploadImg.single('file'), photos.add)
+router.put('/photos/update', verifyToken, photos.update)
 
 module.exports = (app) => {
     app.use(router.routes())

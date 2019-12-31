@@ -9,7 +9,7 @@ const albumSchema = new Schema({
         type: String,
         require: true,
     },
-    token: {
+    userId: {
         type: String,
         require: true,
     },

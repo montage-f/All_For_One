@@ -8,7 +8,11 @@ module.exports = async (ctx, next) => {
     try {
         if (token) {
             // 如果验证没有通过, 则会报错
-            jwt.verify(token)
+            const { username, userId } = jwt.verify(token)
+            ctx.userInfo = {
+                username,
+                userId,
+            }
             await next()
         } else {
             response.body = {
@@ -21,5 +25,6 @@ module.exports = async (ctx, next) => {
             msgCode: 404,
             message: '验证不通过, 请重新登录',
         }
+        console.log(e)
     }
 }

@@ -4,8 +4,8 @@
 const { Album, Photos } = require('../db')
 module.exports = {
     async add(ctx) {
-        const { request, response } = ctx
-        const { headers: { token }, body: { name } } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { body: { name } } = request
         if (!name) {
             response.body = {
                 msgCode: 400,
@@ -13,9 +13,9 @@ module.exports = {
             }
             return
         }
-        const album = await Album.findOne({ token, name })
+        const album = await Album.findOne({ _id: userId, name })
         if (!album) {
-            await Album.create({ token, name })
+            await Album.create({ userId, name })
             response.body = {
                 msgCode: 200,
                 message: '相册创建成功',
@@ -28,20 +28,19 @@ module.exports = {
         }
     },
     async getAlbums(ctx) {
-        const { request, response } = ctx
-        const { headers: { token }, query } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { query } = request
         const { pageIndex, pageSize } = query
-        const albums = await Album.find({ token }).skip((pageIndex - 1) * pageSize).limit(+pageSize)
-        console.log(albums)
+        const albums = await Album.find({ userId }).skip((pageIndex - 1) * pageSize).limit(+pageSize)
         // 获取到Album里面的个数
-        const count = await Album.countDocuments({ token })
+        const count = await Album.countDocuments({ userId })
         // 在map里面使用async的时候, 他返回的每一项其实是一个promise对象,
         // 那么我们需要使用Promise.all来包裹一下, 更方便拿出他的数据
         const list = await Promise.all(albums.map(async item => ({
             // 相册的名字
             name: item.name,
             albumId: item._id,
-            photoCount: await Photos.countDocuments({ token, albumId: item._id }),
+            photoCount: await Photos.countDocuments({ userId, albumId: item._id }),
         })))
         response.body = {
             msgCode: 200,
@@ -53,10 +52,10 @@ module.exports = {
         }
     },
     async delete(ctx) {
-        const { request, response } = ctx
-        const { headers: { token }, body } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { body } = request
         const { albumId } = body
-        const { deletedCount } = await Album.deleteOne({ token }, { _id: albumId })
+        const { deletedCount } = await Album.deleteOne({ userId }, { _id: albumId })
         if (deletedCount) {
             response.body = {
                 msgCode: 200,
@@ -71,9 +70,9 @@ module.exports = {
     },
     async update(ctx) {
         const { request, response } = ctx
-        const { headers: { token }, body } = request
+        const { userInfo: { userId }, body } = request
         const { albumId, name } = body
-        const { nModified } = await Album.updateOne({ token, _id: albumId }, { name })
+        const { nModified } = await Album.updateOne({ userId, _id: albumId }, { name })
         if (nModified) {
             response.body = {
                 msgCode: 200,
