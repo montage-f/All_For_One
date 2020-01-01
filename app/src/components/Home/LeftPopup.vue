@@ -93,7 +93,7 @@
                 this.albumName = ''
             },
             async confirmAlbum() {
-                const { msgCode, message } = await this.$http.post('/album/add', {
+                const { msgCode, message } = await this.$http.post('/api/album/add', {
                     name: this.albumName,
                 })
                 if (msgCode === 200) {

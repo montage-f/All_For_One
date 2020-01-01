@@ -85,7 +85,7 @@
                 ],
             ),
             async initPhotos() {
-                let { msgCode, data } = await this.$http.get('/photos/list', {
+                let { msgCode, data } = await this.$http.get('/api/photos/list', {
                     params: {
                         albumId: this.albumId,
                         pageIndex: 1,
@@ -103,7 +103,7 @@
                     formData.append(key, file[key])
                 }
                 formData.append('albumId', this.albumId)
-                const { msgCode, message } = await this.$http.post('/photos/add', formData)
+                const { msgCode, message } = await this.$http.post('/api/photos/add', formData)
                 if (msgCode === 200) {
                     Toast.success(message)
                     this.initPhotos()
@@ -120,7 +120,7 @@
                     }
                     case 'blur': {
                         this.changeAlbum = true
-                        const { msgCode, message } = await this.$http.put('/album/update', {
+                        const { msgCode, message } = await this.$http.put('/api/album/update', {
                             albumId: this.albumId,
                             name: this.albumValue,
                         })
@@ -144,7 +144,7 @@
                 this.photoId = photoId
             },
             async confirm() {
-                const { msgCode, message } = await this.$http.put('/photos/update', {
+                const { msgCode, message } = await this.$http.put('/api/photos/update', {
                     photoId: this.photoId,
                     photoName: this.photoName,
                 })

@@ -20,7 +20,7 @@ const mutations = {
 }
 const actions = {
     async getAlbums({ commit }, { pageIndex, pageSize }) {
-        const { msgCode, data } = await http.get('/album/getAlbums', { params: { pageIndex, pageSize } })
+        const { msgCode, data } = await http.get('/api/album/getAlbums', { params: { pageIndex, pageSize } })
         if (msgCode === 200) {
             commit('setAlbums', data)
         }

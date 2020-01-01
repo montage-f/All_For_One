@@ -141,7 +141,7 @@
                 for (const key in file) {
                     form.append(key, file[key])
                 }
-                let { msgCode, message } = await this.$http.post('/upload/img', form)
+                let { msgCode, message } = await this.$http.post('/api/upload/img', form)
                 if (msgCode === 200) {
                     Toast.success(message)
                     this.getUserInfo()
@@ -171,7 +171,7 @@
                         title: '是否删除该相册?',
                         // 确认
                     }).then(async () => {
-                        const { msgCode, message } = await this.$http.delete('/album/delete', { data: { albumId } })
+                        const { msgCode, message } = await this.$http.delete('/api/album/delete', { data: { albumId } })
                         if (msgCode === 200) {
                             Toast.success(message)
                             this['album/getAlbums']({ pageIndex: 1, pageSize: 10 })

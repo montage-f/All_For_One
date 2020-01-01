@@ -65,7 +65,7 @@
             ),
             // 注册用户
             async registerUser() {
-                let { msgCode, message, data } = await this.$http.post('/user/register', {
+                let { msgCode, message, data } = await this.$http.post('/api/user/register', {
                     username: this.username,
                     password: this.password,
                 })
@@ -80,7 +80,7 @@
             },
             // 登录
             async login() {
-                let { msgCode, message, data } = await this.$http.post('/user/login', {
+                let { msgCode, message, data } = await this.$http.post('/api/user/login', {
                     username: this.username,
                     password: this.password,
                 })

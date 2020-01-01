@@ -18,7 +18,7 @@ export default new Vuex.Store({
     },
     actions: {
         async getUserInfo({ commit }) {
-            const { msgCode, data, message } = await http.get('/user/info')
+            const { msgCode, data, message } = await http.get('/api/user/info')
             if (msgCode === 200) {
                 commit('setUserInfo', data)
             } else {
