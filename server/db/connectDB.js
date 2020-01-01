@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 module.exports = () => {
     // 定义数据库地址和数据库名称 mongodb://数据库ip地址:端口号/数据库名
     // mongodb://用户名:密码@127.0.0.1:27017/数据库名称
-    mongoose.connect('mongodb://127.0.0.1:27017/album', {
+    mongoose.connect('mongodb://193.112.46.67:27017/album', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

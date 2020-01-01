@@ -28,6 +28,11 @@ module.exports = {
                     },
                 }
             }
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '请输入用户名和密码',
+            }
         }
     },
     async register(ctx, next) {
