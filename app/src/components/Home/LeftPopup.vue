@@ -2,7 +2,7 @@
 <template>
     <div class="LeftPopup">
         <Popup
-            v-model="showLeftPopup"
+            v-model="showLeft"
             position="left"
             :style="{ height: '100%'}"
             @close="closeLeftPopup"
@@ -27,7 +27,11 @@
             title="添加相册"
             show-cancel-button
             @confirm="confirmAlbum">
-            <Field v-model="albumName" placeholder="请输入相册名称"></Field>
+            <Field
+                v-model="albumName"
+                autofocus
+                placeholder="请输入相册名称">
+            </Field>
         </van-dialog>
 
         <van-dialog
@@ -69,9 +73,13 @@
                 isAddAlbum: false,
                 albumName: '',
                 isLogOut: false,
+                showLeft: false,
             }
         },
-        created() {
+        watch: {
+            showLeftPopup(value) {
+                this.showLeft = value
+            },
         },
         methods: {
             ...mapActions([

@@ -36,12 +36,21 @@ module.exports = {
         const count = await Album.countDocuments({ userId })
         // 在map里面使用async的时候, 他返回的每一项其实是一个promise对象,
         // 那么我们需要使用Promise.all来包裹一下, 更方便拿出他的数据
-        const list = await Promise.all(albums.map(async item => ({
-            // 相册的名字
-            name: item.name,
-            albumId: item._id,
-            photoCount: await Photos.countDocuments({ userId, albumId: item._id }),
-        })))
+        const list = await Promise.all(albums.map(async item => {
+            const photos = await Photos.find({ userId, albumId: item._id })
+            let img
+            if (photos.length) {
+                img = photos[0].img
+            }
+            return {
+                // 相册的名字
+                name: item.name,
+                albumId: item._id,
+                photoCount: await Photos.countDocuments({ userId, albumId: item._id }),
+                // 将相册里面的第一章照片默认为相册封面
+                img: img || `http://127.0.0.1:3000/img/timg.jpg`,
+            }
+        }))
         response.body = {
             msgCode: 200,
             data: {

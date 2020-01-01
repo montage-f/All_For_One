@@ -27,7 +27,7 @@
                     <van-image
                         width="100%"
                         height="100%"
-                        fit="scale-down"
+                        fit="contain"
                         :src="item.img">
                     </van-image>
                 </div>
@@ -221,14 +221,15 @@
 
                         }
                     }
-
-
                 }
             }
 
             @import "../assets/css/item";
 
             .item {
+                .content{
+                    overflow: hidden;
+                }
                 .footer {
                     justify-content: center;
                 }

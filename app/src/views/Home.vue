@@ -42,7 +42,11 @@
                          @touchend="cancelDeleteAlbum(item.albumId)"
                     >
                         <div class="content">
-
+                            <VanImage
+                                :src="item.img"
+                                width="100%"
+                                height="100%"
+                            ></VanImage>
                         </div>
                         <div class="footer">
                             <span class="album-name">
@@ -183,7 +187,6 @@
                 clearTimeout(this.timer)
             },
             showPhotos(albumInfo) {
-                console.log(albumInfo)
                 this.$router.push('/photos')
                 this['album/setInfo'](albumInfo)
             },
