@@ -135,7 +135,7 @@
                     return false
                 }
 
-                if (size > 1014 * 1014) {
+                if (size > 500 * 1024) {
                     Toast.fail('上传文件的大小应在1M以内!')
                     return false
                 }
