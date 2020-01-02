@@ -49,7 +49,7 @@ module.exports = {
                 albumId: item._id,
                 photoCount: await Photos.countDocuments({ userId, albumId: item._id }),
                 // 将相册里面的第一章照片默认为相册封面
-                img: img || `http://${ HOST }:${ PORT }/img/timg.jpg`,
+                img: img || `http://${ HOST }:${ PORT }/user/timg.jpg`,
             }
         }))
         response.body = {
