@@ -2,6 +2,7 @@
  * Created by MonTage_fz on 2019/12/31
  */
 const { Photos } = require('../db')
+const { HOST } = require('../config')
 module.exports = {
     async list(ctx) {
         const { request, response, userInfo: { userId } } = ctx
@@ -24,7 +25,7 @@ module.exports = {
     async add(ctx) {
         const { req, response, userInfo: { userId } } = ctx
         const { file: { filename }, body: { albumId } } = req
-        const result = await Photos.findOne({ userId, albumId, img: `http://193.112.46.67:3000/img/${ filename }` })
+        const result = await Photos.findOne({ userId, albumId, img: `http://${ HOST }/img/${ filename }` })
         if (result) {
             response.body = {
                 msgCode: 400,
@@ -36,7 +37,7 @@ module.exports = {
                     userId,
                     albumId,
                     photoName: filename,
-                    img: `http://193.112.46.67:3000/img/${ filename }`,
+                    img: `http://${ HOST }/img/${ filename }`,
                 })
                 response.body = {
                     msgCode: 200,

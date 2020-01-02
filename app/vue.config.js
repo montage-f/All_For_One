@@ -9,7 +9,7 @@ module.exports = {
     publicPath: '/',
     devServer: {
         proxy: {
-            '/': {
+            '/api': {
                 target: 'http://localhost:3000',
             },
         },
@@ -21,7 +21,7 @@ module.exports = {
                     autoprefixer(),
                     pxtorem({
                         rootValue: 37.5,
-                        propList: ["*"],
+                        propList: ['*'],
                     }),
                 ],
             },

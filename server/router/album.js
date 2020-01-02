@@ -2,6 +2,7 @@
  * Created by MonTage_fz on 2019/12/30
  */
 const { Album, Photos } = require('../db')
+const { HOST } = require('../config')
 module.exports = {
     async add(ctx) {
         const { request, response, userInfo: { userId } } = ctx
@@ -48,7 +49,7 @@ module.exports = {
                 albumId: item._id,
                 photoCount: await Photos.countDocuments({ userId, albumId: item._id }),
                 // 将相册里面的第一章照片默认为相册封面
-                img: img || `http://193.112.46.67:3000/img/timg.jpg`,
+                img: img || `http://${ HOST }/img/timg.jpg`,
             }
         }))
         response.body = {
