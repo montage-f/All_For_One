@@ -103,8 +103,8 @@
                     Toast.fail('只允许上传图片!')
                     return false
                 }
-
-                if (size > 1014 * 1014) {
+                console.log(size)
+                if (size > 1024 * 1024) {
                     Toast.fail('上传文件的大小应在1M以内!')
                     return false
                 }

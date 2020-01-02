@@ -21,6 +21,7 @@ export default new Vuex.Store({
             const { msgCode, data, message } = await http.get('/api/user/info')
             if (msgCode === 200) {
                 commit('setUserInfo', data)
+                storage.set('userInfo', data)
             } else {
                 Toast.fail(message)
             }
@@ -28,6 +29,6 @@ export default new Vuex.Store({
         },
     },
     modules: {
-        album
+        album,
     },
 })

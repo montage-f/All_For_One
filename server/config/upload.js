@@ -18,7 +18,7 @@ module.exports = (type) => {
             // 获取文件的拓展名
             const extname = path.extname(originalname)
             const name = (min, max) => Math.floor(Math.random() * (max - min) + min)
-            const randomName = `${ name(1, 10000) }${ extname }`
+            const randomName = `${ name(1, 100000) }${ extname }`
             cb(null, randomName)
         },
     })
