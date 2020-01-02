@@ -5,7 +5,6 @@
                 <Icon name="bars" @click="showLeftPopup=true"></Icon>
             </div>
             <Uploader
-                :max-size="1024*1024"
                 :max-count="1"
                 :before-read="beforeRead"
                 :after-read="afterRead"
@@ -130,9 +129,14 @@
             },
             // 上传文件校验
             beforeRead(file) {
-                const { type } = file
+                const { size, type } = file
                 if (!['image/png', 'image/jpeg'].includes(type)) {
                     Toast.fail('只允许上传图片!')
+                    return false
+                }
+
+                if (size > 1014 * 1014) {
+                    Toast.fail('上传文件的大小应在1M以内!')
                     return false
                 }
                 return true

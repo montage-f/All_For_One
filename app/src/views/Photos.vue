@@ -17,7 +17,7 @@
         </div>
         <div class="content">
             <div class="add-photo">
-                <Uploader :after-read="afterRead" :max-size="1024*1024"></Uploader>
+                <Uploader :after-read="afterRead" :before-read="beforeRead" :max-size="1024*1024"></Uploader>
             </div>
             <div class="item"
                  v-for="item of list"
@@ -96,6 +96,19 @@
                     const { list } = data
                     this.list = list
                 }
+            },
+            beforeRead(file) {
+                const { size, type } = file
+                if (!['image/png', 'image/jpeg'].includes(type)) {
+                    Toast.fail('只允许上传图片!')
+                    return false
+                }
+
+                if (size > 1014 * 1014) {
+                    Toast.fail('上传文件的大小应在1M以内!')
+                    return false
+                }
+                return true
             },
             async afterRead(file) {
                 const formData = new FormData()
@@ -227,9 +240,10 @@
             @import "../assets/css/item";
 
             .item {
-                .content{
+                .content {
                     overflow: hidden;
                 }
+
                 .footer {
                     justify-content: center;
                 }
