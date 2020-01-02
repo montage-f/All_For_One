@@ -158,6 +158,7 @@
             async onLoad() {
                 this.loading = true
                 await this['album/getAlbums']({ pageIndex: this.pageIndex })
+                this.list = []
                 this.loading = false
                 for (let i of this.albumsList) {
                     this.list.push(i)
