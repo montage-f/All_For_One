@@ -17,7 +17,7 @@
         </div>
         <div class="content">
             <div class="add-photo">
-                <Uploader :after-read="afterRead"></Uploader>
+                <Uploader :after-read="afterRead" :max-size="1024*1024"></Uploader>
             </div>
             <div class="item"
                  v-for="item of list"

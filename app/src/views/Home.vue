@@ -5,6 +5,7 @@
                 <Icon name="bars" @click="showLeftPopup=true"></Icon>
             </div>
             <Uploader
+                :max-size="1024*1024"
                 :max-count="1"
                 :before-read="beforeRead"
                 :after-read="afterRead"
