@@ -98,6 +98,7 @@
         },
         created() {
             this.init()
+            this.getUserInfo()
         },
         computed: {
             ...mapState({

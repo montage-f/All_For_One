@@ -2,7 +2,7 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { HOST } = require('../config')
+const { HOST, PORT } = require('../config')
 module.exports = {
     async img(ctx, next) {
         const { req, response, userInfo: { userId } } = ctx
@@ -10,7 +10,7 @@ module.exports = {
         try {
             const { filename } = file
             // 更新数据库
-            await User.updateOne({ _id: userId }, { img: `http://${ HOST }/img/${ filename }` })
+            await User.updateOne({ _id: userId }, { img: `http://${ HOST }:${ PORT }/img/${ filename }` })
             response.body = {
                 msgCode: 200,
                 message: '上传成功',

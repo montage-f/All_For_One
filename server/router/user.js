@@ -2,7 +2,8 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { jwt } = require('../config')
+const { jwt, HOST, PORT } = require('../config')
+
 module.exports = {
     async login(ctx, next) {
         const { request, response } = ctx
@@ -75,7 +76,7 @@ module.exports = {
             message: '用户信息已更新',
             data: {
                 username,
-                img,
+                img: img || `http://${ HOST }:${ PORT }/img/timg.jpg`,
             },
         }
     },
