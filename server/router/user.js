@@ -76,7 +76,7 @@ module.exports = {
             message: '用户信息已更新',
             data: {
                 username,
-                img: img || `http://${ HOST }:${ PORT }/img/timg.jpg`,
+                img: img || `http://${ HOST }:${ PORT }/user/timg.jpg`,
             },
         }
     },

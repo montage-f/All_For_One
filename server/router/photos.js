@@ -25,7 +25,7 @@ module.exports = {
     async add(ctx) {
         const { req, response, userInfo: { userId } } = ctx
         const { file: { filename }, body: { albumId } } = req
-        const result = await Photos.findOne({ userId, albumId, img: `http://${ HOST }:${ PORT }/img/${ filename }` })
+        const result = await Photos.findOne({ userId, albumId, img: `http://${ HOST }:${ PORT }/photos/${ filename }` })
         if (result) {
             response.body = {
                 msgCode: 400,
@@ -37,7 +37,7 @@ module.exports = {
                     userId,
                     albumId,
                     photoName: filename,
-                    img: `http://${ HOST }:${ PORT }/img/${ filename }`,
+                    img: `http://${ HOST }:${ PORT }/photos/${ filename }`,
                 })
                 response.body = {
                     msgCode: 200,
