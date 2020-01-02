@@ -22,5 +22,11 @@ module.exports = (type) => {
             cb(null, randomName)
         },
     })
-    return multer({ storage })
+    // 设置文件上传大小
+    const limits = {
+        fields: 10, // 非文件字段的数量
+        fileSize: 1024 * 1024, // 文件大小, 单位b
+        files: 1, // 文件个数
+    }
+    return multer({ storage, limits })
 }
