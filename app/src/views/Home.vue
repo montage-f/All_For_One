@@ -123,7 +123,7 @@
             async init() {
                 // 当有相册的时候, 初始化初始数据
                 this.list = []
-                this.page = 1
+                this.pageIndex = 1
                 this.finished = false
                 await this.onLoad()
             },
@@ -163,7 +163,7 @@
                 for (let i of this.albumsList) {
                     this.list.push(i)
                 }
-                this.page++
+                this.pageIndex++
                 if (this.list.length >= this.albumsCount) {
                     this.finished = true
                 }
