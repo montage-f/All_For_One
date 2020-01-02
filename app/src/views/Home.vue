@@ -193,7 +193,13 @@
                 clearTimeout(this.timer)
             },
             showPhotos(albumInfo) {
-                this.$router.push('/photos')
+                const { albumId } = albumInfo
+                this.$router.push({
+                    path: '/photos',
+                    query: {
+                        albumId,
+                    },
+                })
                 this['album/setInfo'](albumInfo)
             },
         },

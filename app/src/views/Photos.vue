@@ -75,7 +75,9 @@
         computed: {
             ...mapState({
                 albumName: (state) => state.album.info.name,
-                albumId: (state) => state.album.info.albumId,
+                albumId(state) {
+                    return state.album.info.albumId || this.$route.query.albumId
+                },
             }),
         },
         methods: {

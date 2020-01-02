@@ -79,9 +79,17 @@ module.exports = {
         }
     },
     async update(ctx) {
-        const { request, response } = ctx
-        const { userInfo: { userId }, body } = request
+        const { request, response, userInfo: { userId } } = ctx
+        const { body } = request
         const { albumId, name } = body
+        const album = await Album.findOne({ userId, name })
+        if (album) {
+            response.body = {
+                msgCode: 400,
+                message: '该相册已存在!',
+            }
+            return
+        }
         const { nModified } = await Album.updateOne({ userId, _id: albumId }, { name })
         if (nModified) {
             response.body = {
