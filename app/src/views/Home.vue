@@ -29,7 +29,6 @@
                 <List
                     v-model="loading"
                     :finished="finished"
-                    :immediate-check="false"
                     :offset="10"
                     finished-text="没有更多了"
                     @load="onLoad"
@@ -97,7 +96,6 @@
             }
         },
         created() {
-            this.init()
             this.getUserInfo()
         },
         computed: {
@@ -120,13 +118,6 @@
             ...mapMutations([
                 'album/setInfo',
             ]),
-            async init() {
-                // 当有相册的时候, 初始化初始数据
-                this.list = []
-                this.pageIndex = 1
-                this.finished = false
-                await this.onLoad()
-            },
             // 上传文件校验
             beforeRead(file) {
                 const { size, type } = file
@@ -157,8 +148,7 @@
             },
             async onLoad() {
                 this.loading = true
-                await this['album/getAlbums']({ pageIndex: this.pageIndex })
-                this.list = []
+                await this['album/getAlbums']({ pageIndex: this.pageIndex, pageSize: 6 })
                 this.loading = false
                 for (let i of this.albumsList) {
                     this.list.push(i)
@@ -181,7 +171,7 @@
                         const { msgCode, message } = await this.$http.delete('/api/album/delete', { data: { albumId } })
                         if (msgCode === 200) {
                             Toast.success(message)
-                            this['album/getAlbums']({ pageIndex: 1, pageSize: 10 })
+                            this['album/getAlbums']({ pageIndex: 1, pageSize: 6 })
                         } else {
                             Toast.fail(message)
                         }

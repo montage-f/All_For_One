@@ -14,7 +14,7 @@ module.exports = {
             }
             return
         }
-        const album = await Album.findOne({ _id: userId, name })
+        const album = await Album.findOne({ userId, name })
         if (!album) {
             await Album.create({ userId, name })
             response.body = {
