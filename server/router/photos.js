@@ -69,4 +69,21 @@ module.exports = {
         }
         
     },
+    async delete(ctx) {
+        const { request, response, userInfo: { userId } } = ctx
+        const { body: { photoId, albumId } } = request
+        const { deletedCount } = await Photos.deleteOne({ userId, albumId, _id: photoId })
+        if (deletedCount) {
+            response.body = {
+                msgCode: 200,
+                message: '删除成功',
+            }
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '删除失败',
+            }
+        }
+        
+    },
 }

@@ -65,7 +65,7 @@ module.exports = {
         const { request, response, userInfo: { userId } } = ctx
         const { body } = request
         const { albumId } = body
-        const { deletedCount } = await Album.deleteOne({ userId }, { _id: albumId })
+        const { deletedCount } = await Album.deleteOne({ userId, _id: albumId })
         if (deletedCount) {
             response.body = {
                 msgCode: 200,

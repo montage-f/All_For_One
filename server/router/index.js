@@ -30,6 +30,7 @@ const uploadPhotosImg = uploads('photos')
 router.get('/api/photos/list', verifyToken, photos.list)
 router.post('/api/photos/add', verifyToken, uploadPhotosImg.single('file'), photos.add)
 router.put('/api/photos/update', verifyToken, photos.update)
+router.delete('/api/photos/delete', verifyToken, photos.delete)
 
 module.exports = (app) => {
     app.use(router.routes())

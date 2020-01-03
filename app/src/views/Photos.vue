@@ -17,14 +17,17 @@
         </div>
         <div class="content">
             <div class="add-photo">
-                <Uploader :after-read="afterRead" :before-read="beforeRead" :max-size="1024*1024"></Uploader>
+                <Uploader :after-read="afterRead" :before-read="beforeRead" :max-size="500*1024"></Uploader>
             </div>
             <div class="item"
                  v-for="(item,index) of list"
                  :key="item.photoId"
                  @click="showPhotoImgSwipe(index)"
             >
-                <div class="content">
+                <div class="content"
+                     @touchstart="touchStart(item)"
+                     @touchend="touchEnd"
+                >
                     <van-image
                         width="100%"
                         height="100%"
@@ -76,6 +79,7 @@
         Icon, Uploader, Toast,
         Image, Field, Swipe,
         SwipeItem, Overlay,
+        Dialog,
     } from 'vant'
 
 
@@ -99,6 +103,7 @@
                 photoName: '',
                 photoId: '',
                 isShowPhotoImgSwipe: false,
+                timer: null,
             }
         },
         created() {
@@ -139,7 +144,7 @@
                 }
 
                 if (size > 500 * 1024) {
-                    Toast.fail('上传文件的大小应在1M以内!')
+                    Toast.fail('上传文件的大小应在500kb以内!')
                     return false
                 }
                 return true
@@ -181,7 +186,7 @@
                             } else {
                                 Toast.fail(message)
                             }
-                        }else{
+                        } else {
                             Toast.fail('请输入相册名称!')
                         }
 
@@ -216,6 +221,34 @@
                     this.$refs.swipe.resize()
                     this.$refs.swipe.swipeTo(index)
                 })
+            },
+            touchStart(item) {
+                const { photoId } = item
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                    Dialog.confirm({
+                        title: '是否删除该相片?',
+                        // 确认
+                    }).then(async () => {
+                        const { msgCode, message } = await this.$http.delete('/api/photos/delete', {
+                            data: {
+                                albumId: this.albumId,
+                                photoId,
+                            },
+                        })
+                        if (msgCode === 200) {
+                            Toast.success(message)
+                            this.initPhotos()
+                        } else {
+                            Toast.fail(message)
+                        }
+                    }).catch(() => {
+
+                    })
+                }, 1500)
+            },
+            touchEnd() {
+                clearTimeout(this.timer)
             },
         },
     }
