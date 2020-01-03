@@ -12,7 +12,7 @@ const instance = axios.create()
 instance.interceptors.request.use(
     (config) => {
         const userInfo = storage.get('userInfo')
-        if(userInfo){
+        if (userInfo) {
             const { token } = userInfo
             if (token) {
                 // 将token放入请求头中
@@ -35,7 +35,9 @@ instance.interceptors.response.use(
         switch (msgCode) {
             // 404 代表着token验证验证失败
             case 404:
-                router.push('/login')
+                router.push('/login').catch((e) => {
+                    console.log(e)
+                })
                 Toast.fail(message)
                 break
         }

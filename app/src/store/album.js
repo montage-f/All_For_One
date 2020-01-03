@@ -4,7 +4,10 @@
 import { http } from '../config'
 
 const state = {
-    albumsInfo: {},
+    albumsInfo: {
+        list: [],
+        count: 0,
+    },
     info: {
         name: '',
         albumId: '',

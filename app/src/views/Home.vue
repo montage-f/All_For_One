@@ -107,7 +107,9 @@
         },
         watch: {
             albumsCount() {
-                this.init()
+                this.finished = false
+                this.list = []
+                this.pageIndex = 1
             },
         },
         methods: {
