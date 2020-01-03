@@ -20,8 +20,9 @@
                 <Uploader :after-read="afterRead" :before-read="beforeRead" :max-size="1024*1024"></Uploader>
             </div>
             <div class="item"
-                 v-for="item of list"
+                 v-for="(item,index) of list"
                  :key="item.photoId"
+                 @click="showPhotoImgSwipe(index)"
             >
                 <div class="content">
                     <van-image
@@ -31,11 +32,12 @@
                         :src="item.img">
                     </van-image>
                 </div>
-                <div class="footer" @click="changePhotoName(item)">
+                <div class="footer" @click.stop="changePhotoName(item)">
                     {{ item.photoName }}
                 </div>
             </div>
         </div>
+
         <van-dialog
             v-model="isShow"
             title="修改相片名称"
@@ -44,12 +46,38 @@
         >
             <Field v-model="photoName" placeholder="请输入相片名"></Field>
         </van-dialog>
+
+        <Overlay :show="isShowPhotoImgSwipe" @click="isShowPhotoImgSwipe=false">
+            <Swipe
+                :autoplay="3000"
+                :duration="1000"
+                ref="swipe"
+            >
+                <SwipeItem
+                    v-for="(item, index) in list"
+                    :key="index"
+                >
+                    <van-image
+                        @click.stop
+                        width="100%"
+                        height="100%"
+                        fit="contain"
+                        :src="item.img">
+                    </van-image>
+                </SwipeItem>
+            </Swipe>
+        </Overlay>
     </div>
 </template>
 
 <script>
     import { mapState, mapMutations } from 'vuex'
-    import { Icon, Uploader, Toast, Image, Field } from 'vant'
+    import {
+        Icon, Uploader, Toast,
+        Image, Field, Swipe,
+        SwipeItem, Overlay,
+    } from 'vant'
+
 
     export default {
         name: 'Photos',
@@ -58,6 +86,9 @@
             Uploader,
             'van-image': Image,
             Field,
+            Overlay,
+            SwipeItem,
+            Swipe,
         },
         data() {
             return {
@@ -67,6 +98,7 @@
                 isShow: false,
                 photoName: '',
                 photoId: '',
+                isShowPhotoImgSwipe: false,
             }
         },
         created() {
@@ -135,19 +167,24 @@
                     }
                     case 'blur': {
                         this.changeAlbum = true
-                        const { msgCode, message } = await this.$http.put('/api/album/update', {
-                            albumId: this.albumId,
-                            name: this.albumValue,
-                        })
-                        if (msgCode === 200) {
-                            this['album/setInfo']({
+                        if (this.albumValue) {
+                            const { msgCode, message } = await this.$http.put('/api/album/update', {
                                 albumId: this.albumId,
                                 name: this.albumValue,
                             })
-                            Toast.success(message)
-                        } else {
-                            Toast.fail(message)
+                            if (msgCode === 200) {
+                                this['album/setInfo']({
+                                    albumId: this.albumId,
+                                    name: this.albumValue,
+                                })
+                                Toast.success(message)
+                            } else {
+                                Toast.fail(message)
+                            }
+                        }else{
+                            Toast.fail('请输入相册名称!')
                         }
+
                         break
                     }
                 }
@@ -169,6 +206,16 @@
                 } else {
                     Toast.fail(message)
                 }
+            },
+            showPhotoImgSwipe(index) {
+                this.isShowPhotoImgSwipe = true
+                // 因为在遮罩显示的时候, 是没有宽度的, 而轮波图需要计算宽度,
+                // 所以需要等所有元素加载完成之后再重新计算一次, 所以使用nextTick
+                // 来解决无法获取dom的问题
+                this.$nextTick(() => {
+                    this.$refs.swipe.resize()
+                    this.$refs.swipe.swipeTo(index)
+                })
             },
         },
     }
@@ -249,6 +296,18 @@
                 .footer {
                     justify-content: center;
                 }
+            }
+        }
+
+        .van-swipe {
+            color: white;
+            height: 80%;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+
+            .van-swipe-item {
+                background: #fff;
             }
         }
     }

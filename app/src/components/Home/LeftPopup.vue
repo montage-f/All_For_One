@@ -93,16 +93,21 @@
                 this.albumName = ''
             },
             async confirmAlbum() {
-                const { msgCode, message } = await this.$http.post('/api/album/add', {
-                    name: this.albumName,
-                })
-                if (msgCode === 200) {
-                    Toast.success(message)
-                    this.closeLeftPopup()
-                    this['album/getAlbums']({ pageIndex: 1, pageSize: 6 })
+                if (this.albumName) {
+                    const { msgCode, message } = await this.$http.post('/api/album/add', {
+                        name: this.albumName,
+                    })
+                    if (msgCode === 200) {
+                        Toast.success(message)
+                        this.closeLeftPopup()
+                        this['album/getAlbums']({ pageIndex: 1, pageSize: 6 })
+                    } else {
+                        Toast.fail(message)
+                    }
                 } else {
-                    Toast.fail(message)
+                    Toast.fail('请输入相册名!')
                 }
+
             },
             confirmLogOut() {
                 this.$storage.remove('userInfo')
