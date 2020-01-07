@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
 module.exports = {
-    outputDir: 'docs',
+    outputDir: 'album_app',
     publicPath: '/',
     devServer: {
         proxy: {

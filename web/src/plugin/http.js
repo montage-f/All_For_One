@@ -1,10 +1,10 @@
 /**
- * Created by MonTage_fz on 2019/12/26
+ * Created by MonTage_fz on 2020/1/7
  */
 import axios from 'axios'
 import router from '../router'
 import storage from './storage'
-import { Toast } from 'vant'
+import { Message } from 'element-ui'
 
 const instance = axios.create()
 
@@ -38,7 +38,7 @@ instance.interceptors.response.use(
                 router.push('/login').catch((e) => {
                     console.log(e)
                 })
-                Toast.fail(message)
+                Message.error(message)
                 break
         }
         return data
