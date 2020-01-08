@@ -3,8 +3,12 @@
         <div class="header">
             <div class="title"></div>
             <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                <el-menu-item index="1">仪表盘</el-menu-item>
-                <el-menu-item index="2">系统管理</el-menu-item>
+                <el-menu-item index="1">
+                    <router-link :to="{name:'meter-graph'}" tag="div">仪表盘</router-link>
+                </el-menu-item>
+                <el-menu-item index="2">
+                    <router-link :to="{name:'system-manage'}" tag="div">系统管理</router-link>
+                </el-menu-item>
             </el-menu>
         </div>
         <div class="content">
@@ -56,6 +60,11 @@
                     color: white;
                     border-bottom: 0;
                     background: transparent;
+                    padding: 0;
+
+                    div {
+                        padding: 0 20px;
+                    }
 
                     &.is-active {
                         background: hsla(0, 0%, 100%, .13);
