@@ -43,8 +43,14 @@ module.exports = {
         if (username && password) {
             const user = await User.findOne({ username })
             if (!user) {
+                const dateNow = Date.now()
                 // 拿到用户id, 并返回给前端
-                const { _id: userId } = await User.create({ username, password })
+                const { _id: userId } = await User.create({
+                    username,
+                    password,
+                    createTime: dateNow,
+                    updateTime: dateNow,
+                })
                 const token = jwt.sign({ username, password, userId })
                 response.body = {
                     msgCode: 200,

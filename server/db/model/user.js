@@ -15,7 +15,6 @@ const userSchema = new Schema({
         require: true,
     },
     img: String, // 用户头像
-    email: String, // 用户邮箱
     isAdmin: {
         type: Number,
         default: 0,

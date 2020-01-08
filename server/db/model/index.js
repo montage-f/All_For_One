@@ -4,9 +4,11 @@
 const User = require('./user')
 const Album = require('./album')
 const Photos = require('./photos')
+const Role = require('./role')
 
 module.exports = {
     User,
     Album,
     Photos,
+    Role
 }

@@ -7,7 +7,10 @@ const Schema = mongoose.Schema
 
 const roleSchema = new Schema({
     name: String, // 角色名称
-    status: Number, // 角色状态, 表示这条状态是否有效, 1 是有效, 0 是无效
+    status: {
+        type: Number,
+        default: 1,
+    }, // 角色状态, 表示这条状态是否有效, 1 是有效, 0 是无效
     updateTime: Date, // 更新时间
     createTime: Date, // 用户创建时间
 })
