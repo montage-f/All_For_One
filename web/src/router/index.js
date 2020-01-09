@@ -14,19 +14,54 @@ const routes = [
             {
                 path: 'meter-graph',
                 name: 'meter-graph',
-                component: () => import('../views/MeterGraph'),
+                meta: {
+                    title: '仪表盘',
+                },
+                component: () => import('@views/MeterGraph'),
             },
             {
                 path: 'system-manage',
+                redirect: {
+                    name: 'user-list',
+                },
                 name: 'system-manage',
-                component: () => import('../views/SystemManage'),
+                meta: {
+                    title: '系统管理',
+                },
+                component: () => import('@views/SystemManage'),
+                children: [
+                    {
+                        path: 'user-list',
+                        name: 'user-list',
+                        meta: {
+                            title: '用户列表',
+                        },
+                        component: () => import('@views/UserList'),
+                    },
+                    {
+                        path: 'menu-list',
+                        name: 'menu-list',
+                        meta: {
+                            title: '菜单列表',
+                        },
+                        component: () => import('@views/MenuList'),
+                    },
+                    {
+                        path: 'role-list',
+                        name: 'role-list',
+                        meta: {
+                            title: '角色列表',
+                        },
+                        component: () => import('@views/RoleList'),
+                    },
+                ],
             },
         ],
     },
     {
         path: '/login',
         name: 'login',
-        component: () => import('../views/Login'),
+        component: () => import('@views/Login'),
     },
 ]
 
