@@ -28,7 +28,7 @@ const routes = [
                 meta: {
                     title: '系统管理',
                 },
-                component: () => import('@views/SystemManage'),
+                component: () => import('@comp/LeftNav'),
                 children: [
                     {
                         path: 'user-list',
@@ -62,6 +62,10 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('@views/Login'),
+    },
+    {
+        path: '*',
+        component: () => import('@views/404'),
     },
 ]
 
