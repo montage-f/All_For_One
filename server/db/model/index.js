@@ -5,10 +5,12 @@ const User = require('./user')
 const Album = require('./album')
 const Photos = require('./photos')
 const Role = require('./role')
+const UserRole = require('./user_role')
 
 module.exports = {
     User,
     Album,
     Photos,
-    Role
+    Role,
+    UserRole,
 }

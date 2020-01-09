@@ -7,7 +7,7 @@ module.exports = {
     async getOne(name) {
         return await Role.findOne({ name })
     },
-    async get(pageIndex, pageSize) {
+    async getList(pageIndex, pageSize) {
         if (pageIndex && pageSize) {
             return await Role.find().skip((pageIndex - 1) * pageSize).limit(+pageSize)
         } else {
@@ -22,8 +22,8 @@ module.exports = {
             updateTime,
         })
     },
-    async remove() {
-    
+    async remove(roleId) {
+        return await Role.deleteOne({ _id: roleId })
     },
     async update(params) {
         const { roleId, name } = params

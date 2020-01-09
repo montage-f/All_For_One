@@ -13,12 +13,16 @@ const upload = require('./upload')
 const album = require('./album')
 const photos = require('./photos')
 const role = require('./role')
+const userRole = require('./userRole')
 
 const { uploads, verifyToken } = require('../config')
 
 router.post('/user/register', user.register)
 router.post('/user/login', user.login)
 router.get('/user/info', verifyToken, user.info)
+router.put('/user/update', verifyToken, user.update)
+router.get('/user/list', verifyToken, user.list)
+router.delete('/user/remove', verifyToken, user.remove)
 
 // 上传图片, 放到user文件夹下面
 const uploadUserImg = uploads('user')
@@ -39,9 +43,12 @@ router.delete('/photos/delete', verifyToken, photos.delete)
 
 // 角色
 router.post('/role/add', verifyToken, role.add)
-router.get('/role/get', verifyToken, role.get)
+router.get('/role/list', verifyToken, role.list)
 router.put('/role/update', verifyToken, role.update)
 router.delete('/role/remove', verifyToken, role.remove)
+
+// 用户_角色 设定用户与角色之间的关系
+router.post('/userRole/add', userRole.add)
 
 module.exports = (app) => {
     app.use(router.routes())

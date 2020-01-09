@@ -25,22 +25,35 @@ module.exports = {
             }
         }
     },
-    async get(ctx, next) {
+    async list(ctx, next) {
         const { request, response } = ctx
         const { query: { pageIndex, pageSize } } = request
         let result
         if (pageSize && pageIndex) {
-            result = await role.get(pageIndex, pageSize)
+            result = await role.getList(pageIndex, pageSize)
         } else {
-            result = await role.get()
+            result = await role.getList()
         }
         response.body = {
             msgCode: 200,
             data: result,
         }
     },
-    async remove() {
-    
+    async remove(ctx) {
+        const { request, response } = ctx
+        const { body: { roleId } } = request
+        const { deletedCount } = await role.remove(roleId)
+        if (deletedCount) {
+            response.body = {
+                msgCode: 200,
+                message: '删除成功',
+            }
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '删除失败',
+            }
+        }
     },
     async update(ctx, next) {
         const { request, response } = ctx
