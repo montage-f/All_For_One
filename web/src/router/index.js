@@ -7,7 +7,9 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        redirect: 'meter-graph',
+        redirect: {
+            name: 'meter-graph',
+        },
         name: 'home',
         component: Home,
         children: [
