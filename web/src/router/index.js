@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@views/Home.vue'
+import Layout from '@comp/common/Layout.vue'
 
 Vue.use(VueRouter)
 
@@ -10,8 +10,8 @@ const routes = [
         redirect: {
             name: 'meter-graph',
         },
-        name: 'home',
-        component: Home,
+        name: 'layout',
+        component: Layout,
         children: [
             {
                 path: 'meter-graph',
@@ -20,6 +20,14 @@ const routes = [
                     title: '仪表盘',
                 },
                 component: () => import('@views/MeterGraph'),
+            },
+            {
+                path: 'monitor-alarm',
+                name: 'monitor-alarm',
+                meta: {
+                    title: '监控告警',
+                },
+                component: () => import('@views/MonitorAlarm'),
             },
             {
                 path: 'system-manage',
