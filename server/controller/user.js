@@ -8,7 +8,7 @@ module.exports = {
     },
     async list(pageIndex, pageSize) {
         if (pageIndex && pageSize) {
-            return await User.find().skip((pageIndex - 1) * pageSize).limit(pageSize)
+            return await User.find().skip((pageIndex - 1) * pageSize).limit(+pageSize)
         } else {
             return await User.find()
         }

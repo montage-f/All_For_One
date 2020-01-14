@@ -19,10 +19,6 @@ const userSchema = new Schema({
         type: Number,
         default: 0,
     }, // 是否是管理员权限 1 是管理员, 0 不是管理员
-    status: {
-        type: Number,
-        default: 1,
-    }, // 是否是有效的, 1 是有效, 0 是无效
     updateTime: Date, // 最后一次更新时间
     createTime: Date, // 用户创建时间
 })
