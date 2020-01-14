@@ -5,9 +5,27 @@
 import http from './http'
 import storage from './storage'
 import formValidate from './formValidate'
-import { Menu, Submenu, MenuItem, Form, FormItem, Input, Button, Message } from 'element-ui'
+import formatTime from './formatTime'
 
-const elementUi = [Menu, Submenu, MenuItem, Form, FormItem, Input, Button, Message]
+import {
+    Menu, Submenu, MenuItem,
+    Form, FormItem, Input,
+    Table, TableColumn, Button,
+    Pagination,
+    
+    Message,
+} from 'element-ui'
+
+const elementUi = [
+    // 模板组件
+    Menu, Submenu, MenuItem,
+    Form, FormItem, Input,
+    Table, TableColumn, Button,
+    Pagination,
+    
+    // 信息组件
+    Message,
+]
 
 export { http, storage }
 
@@ -21,4 +39,5 @@ export default (Vue) => {
     Vue.prototype.$storage = storage
     Vue.prototype.$formValidate = formValidate
     Vue.prototype.$message = Message
+    Vue.prototype.$formatTime = formatTime
 }

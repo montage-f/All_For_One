@@ -13,6 +13,9 @@ module.exports = {
             return await User.find()
         }
     },
+    async count() {
+        return await User.countDocuments()
+    },
     async remove(userId) {
         return await User.deleteOne({ _id: userId })
     },

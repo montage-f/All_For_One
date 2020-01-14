@@ -6,11 +6,15 @@ import { storage } from '@plugin'
 
 const state = {
     userInfo: {},
+    userListInfo: {},
 }
 const mutations = {
     setUserInfo(state, params) {
         state.userInfo = params
         storage.set('userInfo', params)
+    },
+    setList(state, params) {
+        state.userListInfo = params
     },
 }
 const actions = {
@@ -18,6 +22,16 @@ const actions = {
         const { msgCode, message, data } = await userApi.login(params)
         if (msgCode === 200) {
             commit('setUserInfo', data)
+        }
+        return {
+            msgCode,
+            message,
+        }
+    },
+    async getList({ commit }, params) {
+        const { msgCode, message, data } = await userApi.getList(params)
+        if (msgCode === 200) {
+            commit('setList', data)
         }
         return {
             msgCode,

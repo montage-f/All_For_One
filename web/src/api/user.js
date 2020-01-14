@@ -6,3 +6,6 @@ import { http } from '@plugin'
 export const login = async (params) => {
     return await http.post('/api/user/login', params)
 }
+export const getList = async (params) => {
+    return await http.get('/api/user/list', { params })
+}

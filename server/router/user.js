@@ -114,9 +114,13 @@ module.exports = {
         } else {
             result = await user.list()
         }
+        const count = await user.count()
         response.body = {
             msgCode: 200,
-            data: result,
+            data: {
+                count,
+                list: result,
+            },
         }
     },
     async remove(ctx) {
