@@ -1,0 +1,33 @@
+/**
+ * Created by MonTage_fz on 2020/1/14
+ */
+import * as userApi from '@api/user'
+import { storage } from '@plugin'
+
+const state = {
+    userInfo: {},
+}
+const mutations = {
+    setUserInfo(state, params) {
+        state.userInfo = params
+        storage.set('userInfo', params)
+    },
+}
+const actions = {
+    async login({ commit }, params) {
+        const { msgCode, message, data } = await userApi.login(params)
+        if (msgCode === 200) {
+            commit('setUserInfo', data)
+        }
+        return {
+            msgCode,
+            message,
+        }
+    },
+}
+export default {
+    namespaced: true,
+    state,
+    mutations,
+    actions,
+}
