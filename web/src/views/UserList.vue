@@ -56,7 +56,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="新增用户" :visible.sync="isAddUser" width="30%">
+        <el-dialog :title="`${dialogTitle}用户`" :visible.sync="isAddUser" @close="$formReset('userForm')" width="30%">
             <el-form ref="userForm" :model="userForm" :rules="rules" label-position="left" label-width="100px">
                 <el-form-item label="用户头像" prop="img">
                     <el-upload
@@ -77,7 +77,7 @@
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="userForm.name" placeholder="请输入姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
+                <el-form-item label="密码" prop="password" v-if="dialogTitle==='新增'">
                     <el-input v-model="userForm.password" type="password" placeholder="请输入用户密码"></el-input>
                 </el-form-item>
                 <el-form-item label="所属角色" prop="roleIds">
@@ -170,6 +170,7 @@
                         { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
                     ],
                 },
+                dialogTitle: '新增',
             }
         },
         created() {
@@ -201,23 +202,32 @@
             async onSubmit() {
                 let isValidate = await this.$formValidate('userForm')
                 if (!isValidate) return
-                const { msgCode, message } = await this['user/addUser'](this.userForm)
+                const dialogTitle = {
+                    '新增': async () => await this['user/addUser'](this.userForm),
+                    '编辑': async () => await this['user/updateUser'](this.userForm),
+                }
+                const { msgCode, message } = await dialogTitle[this.dialogTitle]()
                 if (msgCode === 200) {
+                    this.$formReset('userForm')
                     this.isAddUser = false
                     this.$message.success(message)
                     return
                 }
-                this.$message.error(message)
+                this.$message.success(message)
             },
             onEmitUser(row) {
-                console.log(row)
+                this.userForm = {
+                    ...row,
+                }
+                this.isAddUser = true
+                this.dialogTitle = '编辑'
             },
             onDeleteUser(row) {
                 console.log(row)
             },
             onAddUser() {
                 this.isAddUser = true
-                this.$formReset('userForm')
+                this.dialogTitle = '新增'
             },
 
             handleSizeChange(val) {

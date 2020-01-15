@@ -6,7 +6,7 @@ const { user, userRole } = require('../controller')
 const { jwt, HOST, PORT } = require('../config')
 
 module.exports = {
-    async login(ctx, next) {
+    async login(ctx) {
         const { request, response } = ctx
         const { body } = request
         const { username, password } = body
@@ -37,7 +37,7 @@ module.exports = {
             }
         }
     },
-    async register(ctx, next) {
+    async register(ctx) {
         const { request, response } = ctx
         const { body } = request
         const { username, password, img = '', isAdmin = 0, roleIds = [], name = '' } = body
@@ -81,7 +81,7 @@ module.exports = {
             }
         }
     },
-    async add(ctx) {
+    async webAdd(ctx) {
         const { request, response } = ctx
         const { body: { username, password, img, roleIds = [], isAdmin = 0, name = '' } } = request
         if (username && password && img) {
@@ -119,8 +119,13 @@ module.exports = {
         }
         
     },
+    async webUpdate(ctx) {
+        const { request, response } = ctx
+        const { body } = request
+        
+    },
     // 获取用户信息
-    async info(ctx, next) {
+    async info(ctx) {
         const { response, userInfo } = ctx
         const { userId } = userInfo
         const { username, img } = await User.findOne({ _id: userId })
