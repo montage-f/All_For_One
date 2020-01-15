@@ -50,7 +50,7 @@
         width: 100%;
         height: 100%;
         display: flex;
-        
+
         .left {
             width: 160px;
             border-right: 1px solid #ccc;
@@ -60,7 +60,7 @@
         .content {
             flex: 1;
             padding: 20px;
-            box-sizing: border-box;
+            overflow: hidden;
         }
     }
 </style>

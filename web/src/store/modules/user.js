@@ -16,9 +16,6 @@ const mutations = {
     setList(state, params) {
         state.userListInfo = params
     },
-    setAddUser() {
-    
-    },
 }
 const actions = {
     async login({ commit }, params) {
@@ -41,9 +38,18 @@ const actions = {
             message,
         }
     },
-    async addUser({ commit }, params) {
-        commit('setAddUser')
-        return await userApi.addUser(params)
+    async addUser({ dispatch }, params) {
+        const { msgCode, message } = await userApi.addUser(params)
+        if (msgCode === 200) {
+            dispatch('getList', {
+                pageIndex: 1,
+                pageSize: 10,
+            })
+        }
+        return {
+            msgCode,
+            message,
+        }
     },
 }
 export default {

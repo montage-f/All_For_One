@@ -40,7 +40,7 @@ module.exports = {
     async register(ctx, next) {
         const { request, response } = ctx
         const { body } = request
-        const { username, password, img = '', isAdmin = 0, roleIds = [] } = body
+        const { username, password, img = '', isAdmin = 0, roleIds = [], name = '' } = body
         if (username && password) {
             const user = await User.findOne({ username })
             if (!user) {
@@ -48,6 +48,7 @@ module.exports = {
                 // 拿到用户id, 并返回给前端
                 const { _id: userId } = await User.create({
                     username,
+                    name,
                     password,
                     img,
                     isAdmin,
@@ -82,24 +83,33 @@ module.exports = {
     },
     async add(ctx) {
         const { request, response } = ctx
-        const { body: { username, password, img, roleIds = [], isAdmin = 0 } } = request
+        const { body: { username, password, img, roleIds = [], isAdmin = 0, name = '' } } = request
         if (username && password && img) {
-            const dateNow = Date.now()
-            const { _id: userId } = await user.add({
-                username,
-                password,
-                img,
-                isAdmin,
-                createTime: dateNow,
-                updateTime: dateNow,
-            })
-            // 如果传入了角色id, 那么就让用户id和角色id关联起来
-            if (roleIds.length) {
-                userRole.add(userId, roleIds)
-            }
-            response.body = {
-                msgCode: 200,
-                message: '用户添加成功',
+            const isUser = await user.findOne(username)
+            if (isUser) {
+                response.body = {
+                    msgCode: 400,
+                    message: '该用户名以存在, 请更换用户名',
+                }
+            } else {
+                const dateNow = Date.now()
+                const { _id: userId } = await user.add({
+                    username,
+                    name,
+                    password,
+                    img,
+                    isAdmin,
+                    createTime: dateNow,
+                    updateTime: dateNow,
+                })
+                // 如果传入了角色id, 那么就让用户id和角色id关联起来
+                if (roleIds.length) {
+                    userRole.add(userId, roleIds)
+                }
+                response.body = {
+                    msgCode: 200,
+                    message: '用户添加成功',
+                }
             }
             return
         }
@@ -151,11 +161,23 @@ module.exports = {
             result = await user.list()
         }
         const count = await user.count()
+        const list = result.map((item) => {
+            return {
+                username: item.username,
+                name: item.name,
+                img: item.img,
+                isAdmin: item.isAdmin,
+                updateTime: item.updateTime,
+                createTime: item.createTime,
+                userId: item._id,
+                roleIds: [],
+            }
+        })
         response.body = {
             msgCode: 200,
             data: {
                 count,
-                list: result,
+                list,
             },
         }
     },

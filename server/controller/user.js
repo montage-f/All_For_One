@@ -22,4 +22,7 @@ module.exports = {
     async add(params) {
         return await User.create(params)
     },
+    async findOne(username) {
+        return await User.findOne({ username })
+    },
 }

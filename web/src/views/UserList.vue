@@ -4,37 +4,47 @@
         <div class="table-header">
             <el-button type="primary" @click="onAddUser">新增</el-button>
         </div>
-        <el-table
-            :data="userList"
-            border
-        >
-            <TableColumn
-                v-for="(item,index) of tableColumnInfo"
-                v-bind="item"
-                :key="index"
+        <div class="table-content">
+            <el-table
+                :data="userList"
+                height="100%"
+                border
             >
-                <template v-slot:img="{row}" v-if="item.slotName">
-                    <div>
-                        <img :src="row.img" alt="" width="50px" height="50px" style="border-radius:50%;" v-if="row.img">
-                    </div>
-                </template>
+                <TableColumn
+                    v-for="(item,index) of tableColumnInfo"
+                    v-bind="item"
+                    :key="index"
+                >
+                    <template v-slot:img="{row}" v-if="item.slotName">
+                        <div>
+                            <img :src="row.img" alt="" width="50px" height="50px" style="border-radius:50%;"
+                                 v-if="row.img">
+                        </div>
+                    </template>
 
-                <template v-slot:isAdmin="{row}" v-if="item.slotName">
-                    {{ row.isAdmin?'是':'否' }}
-                </template>
+                    <template v-slot:isAdmin="{row}" v-if="item.slotName">
+                        {{ row.isAdmin?'是':'否' }}
+                    </template>
 
-                <template v-slot:createTime="{row}" v-if="item.slotName">
-                    {{ $formatTime(row.createTime) }}
-                </template>
+                    <template v-slot:createTime="{row}" v-if="item.slotName">
+                        {{ $formatTime(row.createTime) }}
+                    </template>
 
-                <template v-slot:updateTime="{row}" v-if="item.slotName">
-                    {{ $formatTime(row.updateTime) }}
-                </template>
-            </TableColumn>
-            <el-table-column
-                label="操作">
-            </el-table-column>
-        </el-table>
+                    <template v-slot:updateTime="{row}" v-if="item.slotName">
+                        {{ $formatTime(row.updateTime) }}
+                    </template>
+                </TableColumn>
+                <el-table-column
+                    label="操作"
+                    width="150"
+                >
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="onEmitUser(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="onDeleteUser(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
         <div class="table-footer">
             <el-pagination
                 @size-change="handleSizeChange"
@@ -67,13 +77,13 @@
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="userForm.password" type="password" placeholder="请输入用户密码"></el-input>
                 </el-form-item>
-                <el-form-item label="所属角色">
+                <el-form-item label="所属角色" prop="roleIds">
                     <el-select v-model="userForm.roleIds" multiple placeholder="请选择角色">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="管理员">
+                <el-form-item label="管理员" prop="isAdmin">
                     <el-select v-model="userForm.isAdmin" placeholder="是否拥有管理员权限">
                         <el-option label="是" :value="1"></el-option>
                         <el-option label="否" :value="0"></el-option>
@@ -107,16 +117,23 @@
                         label: '用户名',
                     },
                     {
+                        prop: 'name',
+                        label: '姓名',
+                    },
+                    {
                         prop: 'img',
                         label: '用户头像',
                         slotName: 'img',
-                        width: 100,
                     },
                     {
                         prop: 'isAdmin',
                         label: '管理员',
                         // 给需要自定义的模板添加插槽
                         slotName: 'isAdmin',
+                    },
+                    {
+                        prop: 'userRole',
+                        label: '用户角色',
                     },
                     {
                         prop: 'createTime',
@@ -173,6 +190,28 @@
                 'user/getList',
                 'user/addUser',
             ]),
+            async onSubmit() {
+                let isValidate = await this.$formValidate('userForm')
+                if (!isValidate) return
+                const { msgCode, message } = await this['user/addUser'](this.userForm)
+                if (msgCode === 200) {
+                    this.isAddUser = false
+                    this.$message.success(message)
+                    return
+                }
+                this.$message.error(message)
+            },
+            onEmitUser(row) {
+                console.log(row)
+            },
+            onDeleteUser(row) {
+                console.log(row)
+            },
+            onAddUser() {
+                this.isAddUser = true
+                this.$formReset('userForm')
+            },
+
             handleSizeChange(val) {
                 this.pageSize = val
                 this['user/getList']({
@@ -186,23 +225,6 @@
                     pageIndex: this.pageIndex,
                     pageSize: this.pageSize,
                 })
-            },
-            async onSubmit() {
-                let isValidate = await this.$formValidate('userForm')
-                if (!isValidate) return
-                const { msgCode, message } = await this['user/addUser'](this.userForm)
-                if (msgCode === 200) {
-                    this['user/getList']({
-                        pageIndex: this.pageIndex,
-                        pageSize: this.pageSize,
-                    })
-                    this.$message.success(message)
-                    return
-                }
-                this.$message.error(message)
-            },
-            onAddUser() {
-                this.isAddUser = true
             },
             handleAvatarSuccess(response) {
                 const { msgCode, message, data } = response
@@ -220,13 +242,14 @@
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 png, jpeg, jpg, gif 格式!');
+                    this.$message.error('上传头像图片只能是 .png, .jpeg, .jpg, .gif 格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
             },
+
         },
     }
 </script>
@@ -238,13 +261,24 @@
     }
 
     .UserList {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
         .table-header {
             .flex();
+            height: 32px;
             margin-bottom: 10px;
+        }
+
+        .table-content {
+            flex: 1;
         }
 
         .table-footer {
             .flex();
+            height: 32px;
             margin-top: 10px;
         }
 

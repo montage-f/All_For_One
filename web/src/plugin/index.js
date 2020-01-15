@@ -7,6 +7,7 @@ import storage from './storage' // 本地存储
 import formValidate from './formValidate' // 表单验证
 import formatTime from './formatTime' // 格式化时间
 import * as formRules from './formRules' // 表单验证
+import formReset from './formReset' // 表单重置
 
 import {
     Menu, Submenu, MenuItem,
@@ -15,6 +16,7 @@ import {
     Pagination, Dialog, Select,
     Option, Upload,
     
+    // 组件直接调用
     Message,
 } from 'element-ui'
 
@@ -25,9 +27,6 @@ const elementUi = [
     Table, TableColumn, Button,
     Pagination, Dialog, Select,
     Option, Upload,
-    
-    // 信息组件
-    Message,
 ]
 
 export { http, storage, formRules }
@@ -43,4 +42,5 @@ export default (Vue) => {
     Vue.prototype.$formValidate = formValidate
     Vue.prototype.$message = Message
     Vue.prototype.$formatTime = formatTime
+    Vue.prototype.$formReset = formReset
 }

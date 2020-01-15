@@ -14,6 +14,7 @@ const userSchema = new Schema({
         type: String,
         require: true,
     },
+    name: String, // 姓名
     img: String, // 用户头像
     isAdmin: {
         type: Number,
