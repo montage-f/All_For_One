@@ -2,7 +2,7 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { user } = require('../controller')
+const { user, userRole } = require('../controller')
 const { jwt, HOST, PORT } = require('../config')
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
     async register(ctx, next) {
         const { request, response } = ctx
         const { body } = request
-        const { username, password } = body
+        const { username, password, img = '', isAdmin = 0, roleIds = [] } = body
         if (username && password) {
             const user = await User.findOne({ username })
             if (!user) {
@@ -49,9 +49,16 @@ module.exports = {
                 const { _id: userId } = await User.create({
                     username,
                     password,
+                    img,
+                    isAdmin,
                     createTime: dateNow,
                     updateTime: dateNow,
                 })
+                // 如果选择了角色, 那么就要存入user_role数据库
+                if (roleIds.length) {
+                    const result = await userRole.add(userId, roleIds)
+                    console.log(result, '存入user_role数据库成功')
+                }
                 const token = jwt.sign({ username, password, userId })
                 response.body = {
                     msgCode: 200,
@@ -72,6 +79,35 @@ module.exports = {
                 message: '请填写用户名和密码',
             }
         }
+    },
+    async add(ctx) {
+        const { request, response } = ctx
+        const { body: { username, password, img, roleIds = [], isAdmin = 0 } } = request
+        if (username && password && img) {
+            const dateNow = Date.now()
+            const { _id: userId } = await user.add({
+                username,
+                password,
+                img,
+                isAdmin,
+                createTime: dateNow,
+                updateTime: dateNow,
+            })
+            // 如果传入了角色id, 那么就让用户id和角色id关联起来
+            if (roleIds.length) {
+                userRole.add(userId, roleIds)
+            }
+            response.body = {
+                msgCode: 200,
+                message: '用户添加成功',
+            }
+            return
+        }
+        response.body = {
+            msgCode: 400,
+            message: '用户添加失败',
+        }
+        
     },
     // 获取用户信息
     async info(ctx, next) {

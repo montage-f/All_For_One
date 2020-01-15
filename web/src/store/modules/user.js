@@ -16,6 +16,9 @@ const mutations = {
     setList(state, params) {
         state.userListInfo = params
     },
+    setAddUser() {
+    
+    },
 }
 const actions = {
     async login({ commit }, params) {
@@ -37,6 +40,10 @@ const actions = {
             msgCode,
             message,
         }
+    },
+    async addUser({ commit }, params) {
+        commit('setAddUser')
+        return await userApi.addUser(params)
     },
 }
 export default {

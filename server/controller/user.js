@@ -19,4 +19,7 @@ module.exports = {
     async remove(userId) {
         return await User.deleteOne({ _id: userId })
     },
+    async add(params) {
+        return await User.create(params)
+    },
 }

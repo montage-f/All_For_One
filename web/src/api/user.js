@@ -9,3 +9,7 @@ export const login = async (params) => {
 export const getList = async (params) => {
     return await http.get('/api/user/list', { params })
 }
+
+export const addUser = async (params) => {
+    return await http.post('/api/web/user/add', params)
+}

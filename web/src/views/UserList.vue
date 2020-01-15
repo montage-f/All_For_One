@@ -1,6 +1,9 @@
 /**Created by MonTage_fz on 2020/1/9**/
 <template>
     <div class="UserList">
+        <div class="table-header">
+            <el-button type="primary" @click="onAddUser">新增</el-button>
+        </div>
         <el-table
             :data="userList"
             border
@@ -10,6 +13,12 @@
                 v-bind="item"
                 :key="index"
             >
+                <template v-slot:img="{row}" v-if="item.slotName">
+                    <div>
+                        <img :src="row.img" alt="" width="50px" height="50px" style="border-radius:50%;" v-if="row.img">
+                    </div>
+                </template>
+
                 <template v-slot:isAdmin="{row}" v-if="item.slotName">
                     {{ row.isAdmin?'是':'否' }}
                 </template>
@@ -36,11 +45,52 @@
                 :total="userCount">
             </el-pagination>
         </div>
+
+        <el-dialog title="新增用户" :visible.sync="isAddUser" width="30%">
+            <el-form ref="userForm" :model="userForm" :rules="rules" label-position="left" label-width="100px">
+                <el-form-item label="用户头像" prop="img">
+                    <el-upload
+                        ref="upload"
+                        class="avatar-uploader"
+                        action="/api/web/user/addImg"
+                        :headers="{token}"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                        <img v-if="userForm.img" :src="userForm.img" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="userForm.username" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="userForm.password" type="password" placeholder="请输入用户密码"></el-input>
+                </el-form-item>
+                <el-form-item label="所属角色">
+                    <el-select v-model="userForm.roleIds" multiple placeholder="请选择角色">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="管理员">
+                    <el-select v-model="userForm.isAdmin" placeholder="是否拥有管理员权限">
+                        <el-option label="是" :value="1"></el-option>
+                        <el-option label="否" :value="0"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item class="btn">
+                    <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                    <el-button @click="isAddUser=false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import { mapActions, mapState } from 'vuex'
+    import { formRules } from '@plugin'
     import TableColumn from '@comp/common/TableColumn'
 
     export default {
@@ -59,6 +109,8 @@
                     {
                         prop: 'img',
                         label: '用户头像',
+                        slotName: 'img',
+                        width: 100,
                     },
                     {
                         prop: 'isAdmin',
@@ -79,6 +131,20 @@
                 ],
                 pageIndex: 1,
                 pageSize: 10,
+                isAddUser: false,
+                userForm: {
+                    username: '',
+                    password: '',
+                    roleIds: [],
+                    isAdmin: 0,
+                    img: '',
+                },
+                rules: {
+                    ...formRules.user,
+                    img: [
+                        { required: true, message: '请上传图片', trigger: 'blur' },
+                    ],
+                },
             }
         },
         created() {
@@ -97,10 +163,15 @@
             userCount() {
                 return this.userListInfo.count
             },
+            token() {
+                const { token } = this.$storage.get('userInfo')
+                return token
+            },
         },
         methods: {
             ...mapActions([
                 'user/getList',
+                'user/addUser',
             ]),
             handleSizeChange(val) {
                 this.pageSize = val
@@ -116,16 +187,102 @@
                     pageSize: this.pageSize,
                 })
             },
+            async onSubmit() {
+                let isValidate = await this.$formValidate('userForm')
+                if (!isValidate) return
+                const { msgCode, message } = await this['user/addUser'](this.userForm)
+                if (msgCode === 200) {
+                    this['user/getList']({
+                        pageIndex: this.pageIndex,
+                        pageSize: this.pageSize,
+                    })
+                    this.$message.success(message)
+                    return
+                }
+                this.$message.error(message)
+            },
+            onAddUser() {
+                this.isAddUser = true
+            },
+            handleAvatarSuccess(response) {
+                const { msgCode, message, data } = response
+                if (msgCode === 200) {
+                    const { img } = data
+                    this.userForm.img = img
+                    this.$message.success(message)
+                } else if (msgCode === 404) {
+                    this.$router.push('/login')
+                }
+            },
+            // 图像上传之前校验
+            beforeAvatarUpload(file) {
+                const isJPG = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(file.type);
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 png, jpeg, jpg, gif 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
         },
     }
 </script>
 
 <style scoped lang="less">
+    .flex {
+        display: flex;
+        justify-content: flex-end;
+    }
+
     .UserList {
+        .table-header {
+            .flex();
+            margin-bottom: 10px;
+        }
+
         .table-footer {
-            display: flex;
-            justify-content: flex-end;
+            .flex();
             margin-top: 10px;
+        }
+
+        .el-dialog {
+            .el-form-item {
+                &:last-child {
+                    .flex();
+                }
+            }
+
+            .avatar-uploader {
+                /deep/ .el-upload {
+                    border: 1px dashed #d9d9d9;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+
+                    &:hover {
+                        border-color: #409EFF;
+                    }
+                }
+
+                .avatar-uploader-icon {
+                    font-size: 28px;
+                    color: #8c939d;
+                    width: 100px;
+                    height: 100px;
+                    line-height: 100px;
+                    text-align: center;
+                }
+
+                .avatar {
+                    width: 100px;
+                    height: 100px;
+                    display: block;
+                }
+            }
         }
     }
 </style>

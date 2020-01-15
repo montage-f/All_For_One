@@ -2,16 +2,18 @@
  * Created by MonTage_fz on 2020/1/7
  */
 
-import http from './http'
-import storage from './storage'
-import formValidate from './formValidate'
-import formatTime from './formatTime'
+import http from './http' // ajax请求
+import storage from './storage' // 本地存储
+import formValidate from './formValidate' // 表单验证
+import formatTime from './formatTime' // 格式化时间
+import * as formRules from './formRules' // 表单验证
 
 import {
     Menu, Submenu, MenuItem,
     Form, FormItem, Input,
     Table, TableColumn, Button,
-    Pagination,
+    Pagination, Dialog, Select,
+    Option, Upload,
     
     Message,
 } from 'element-ui'
@@ -21,13 +23,14 @@ const elementUi = [
     Menu, Submenu, MenuItem,
     Form, FormItem, Input,
     Table, TableColumn, Button,
-    Pagination,
+    Pagination, Dialog, Select,
+    Option, Upload,
     
     // 信息组件
     Message,
 ]
 
-export { http, storage }
+export { http, storage, formRules }
 
 export default (Vue) => {
     // 设置所有element的组件的大小为small

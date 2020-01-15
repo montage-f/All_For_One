@@ -25,6 +25,10 @@ router.get('/user/list', verifyToken, user.list)
 router.delete('/user/remove', verifyToken, user.remove)
 
 // 上传图片, 放到user文件夹下面
+const uploadWebUserImg = uploads('webUser')
+router.post('/web/user/addImg', verifyToken, uploadWebUserImg.single('file'), upload.webImg)
+router.post('/web/user/add', verifyToken, user.add)
+
 const uploadUserImg = uploads('user')
 router.post('/upload/img', verifyToken, uploadUserImg.single('file'), upload.img)
 
