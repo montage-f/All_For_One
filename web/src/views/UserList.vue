@@ -74,6 +74,9 @@
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="userForm.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
+                <el-form-item label="姓名" prop="name">
+                    <el-input v-model="userForm.name" placeholder="请输入姓名"></el-input>
+                </el-form-item>
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="userForm.password" type="password" placeholder="请输入用户密码"></el-input>
                 </el-form-item>
@@ -151,6 +154,7 @@
                 isAddUser: false,
                 userForm: {
                     username: '',
+                    name: '',
                     password: '',
                     roleIds: [],
                     isAdmin: 0,
@@ -160,6 +164,10 @@
                     ...formRules.user,
                     img: [
                         { required: true, message: '请上传图片', trigger: 'blur' },
+                    ],
+                    name: [
+                        { required: true, message: '请输入姓名', trigger: 'blur' },
+                        { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
                     ],
                 },
             }
@@ -227,11 +235,10 @@
                 })
             },
             handleAvatarSuccess(response) {
-                const { msgCode, message, data } = response
+                const { msgCode, data } = response
                 if (msgCode === 200) {
                     const { img } = data
                     this.userForm.img = img
-                    this.$message.success(message)
                 } else if (msgCode === 404) {
                     this.$router.push('/login')
                 }
