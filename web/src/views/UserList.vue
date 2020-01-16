@@ -7,7 +7,6 @@
         <div class="table-content">
             <el-table
                 :data="userList"
-                height="100%"
                 border
             >
                 <el-table-column
@@ -20,7 +19,7 @@
                     v-bind="item"
                     :key="index"
                 >
-                    <template v-slot:img="{row}" v-if="item.slotName">
+                    <template v-if="item.slotName" v-slot:img="{row}">
                         <div>
                             <img
                                 v-if="row.img"
@@ -31,15 +30,15 @@
                         </div>
                     </template>
 
-                    <template v-slot:isAdmin="{row}" v-if="item.slotName">
+                    <template v-if="item.slotName" v-slot:isAdmin="{row}">
                         {{ row.isAdmin?'是':'否' }}
                     </template>
 
-                    <template v-slot:createTime="{row}" v-if="item.slotName">
+                    <template v-if="item.slotName" v-slot:createTime="{row}">
                         {{ $formatTime(row.createTime) }}
                     </template>
 
-                    <template v-slot:updateTime="{row}" v-if="item.slotName">
+                    <template v-if="item.slotName" v-slot:updateTime="{row}">
                         {{ $formatTime(row.updateTime) }}
                     </template>
                 </TableColumn>
@@ -309,6 +308,10 @@
 
         .table-content {
             flex: 1;
+
+            .el-table {
+                max-height: 100%;
+            }
         }
 
         .table-footer {
