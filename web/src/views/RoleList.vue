@@ -16,7 +16,7 @@
                 </el-table-column>
 
                 <TableColumn
-                    v-for="(item,index) of roleListInfo"
+                    v-for="(item,index) of tableColumnInfo"
                     :key="index"
                     v-bind="item"
                 >
