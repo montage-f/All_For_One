@@ -6,7 +6,9 @@ const router = new Router()
 
 // 配置路由前缀
 router.prefix('/api')
+const webRouter = require('./web')
 
+webRouter(router)
 
 const user = require('./user')
 const upload = require('./upload')
@@ -24,12 +26,8 @@ router.put('/user/update', verifyToken, user.update)
 router.get('/user/list', verifyToken, user.list)
 router.delete('/user/remove', verifyToken, user.remove)
 
-// 上传图片, 放到user文件夹下面
-const uploadWebUserImg = uploads('webUser')
-router.post('/web/user/addImg', verifyToken, uploadWebUserImg.single('file'), upload.webImg)
-router.post('/web/user/add', verifyToken, user.webAdd)
-router.put('/web/user/update', verifyToken, user.webUpdate)
 
+// 上传图片, 放到user文件夹下面
 const uploadUserImg = uploads('user')
 router.post('/upload/img', verifyToken, uploadUserImg.single('file'), upload.img)
 
