@@ -121,8 +121,12 @@
         },
         data() {
             return {
-                tableData: [],
                 tableColumnInfo: [
+                    {
+                        prop: 'img',
+                        label: '用户头像',
+                        slotName: 'img',
+                    },
                     {
                         prop: 'username',
                         label: '用户名',
@@ -130,11 +134,6 @@
                     {
                         prop: 'name',
                         label: '姓名',
-                    },
-                    {
-                        prop: 'img',
-                        label: '用户头像',
-                        slotName: 'img',
                     },
                     {
                         prop: 'isAdmin',
@@ -289,6 +288,8 @@
 </script>
 
 <style scoped lang="less">
+    @import '~@assets/css/tableCommon.less';
+
     .flex {
         display: flex;
         justify-content: flex-end;
@@ -297,28 +298,7 @@
     .UserList {
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .table-header {
-            .flex();
-            height: 32px;
-            margin-bottom: 10px;
-        }
-
-        .table-content {
-            flex: 1;
-
-            .el-table {
-                max-height: 100%;
-            }
-        }
-
-        .table-footer {
-            .flex();
-            height: 32px;
-            margin-top: 10px;
-        }
+        .tableCommon();
 
         .el-dialog {
             .el-form-item {

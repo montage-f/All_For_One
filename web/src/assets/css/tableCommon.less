@@ -1,0 +1,29 @@
+.flex {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tableCommon {
+    display: flex;
+    flex-direction: column;
+    
+    .table-header {
+        .flex();
+        height: 32px;
+        margin-bottom: 10px;
+    }
+    
+    .table-content {
+        flex: 1;
+        
+        .el-table {
+            max-height: 100%;
+        }
+    }
+    
+    .table-footer {
+        .flex();
+        height: 32px;
+        margin-top: 10px;
+    }
+}
