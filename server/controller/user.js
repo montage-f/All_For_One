@@ -25,4 +25,11 @@ module.exports = {
     async findOne(username) {
         return await User.findOne({ username })
     },
+    async webUpdate(params) {
+        const { userId, ...rest } = params
+        return User.updateOne({ _id: userId }, { ...rest })
+    },
+    async webDelete(userId) {
+        return User.deleteOne({ _id: userId })
+    },
 }

@@ -122,7 +122,56 @@ module.exports = {
     async webUpdate(ctx) {
         const { request, response } = ctx
         const { body } = request
+        const { img, username, name } = body
+        if (img && username && name) {
+            const dateNow = Date.now()
+            const { nModified } = await user.webUpdate({
+                ...body,
+                updateTime: dateNow,
+            })
+            if (nModified) {
+                response.body = {
+                    msgCode: 200,
+                    message: '更新成功',
+                }
+            } else {
+                response.body = {
+                    msgCode: 400,
+                    message: '更新失败',
+                }
+            }
+            return
+        }
+        response.body = {
+            msgCode: 400,
+            message: '请完善用户信息',
+        }
         
+    },
+    async webDelete(ctx) {
+        const { response, request } = ctx
+        const { body } = request
+        const { userId } = body
+        if (userId) {
+            const { deletedCount } = await user.webDelete(userId)
+            if (deletedCount) {
+                response.body = {
+                    msgCode: 200,
+                    message: '删除成功',
+                }
+            } else {
+                response.body = {
+                    msgCode: 400,
+                    message: '删除失败',
+                }
+            }
+            
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '请传入正确的参数',
+            }
+        }
     },
     // 获取用户信息
     async info(ctx) {

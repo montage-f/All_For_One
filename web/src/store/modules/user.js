@@ -51,6 +51,32 @@ const actions = {
             message,
         }
     },
+    async updateUser({ dispatch }, params) {
+        const { msgCode, message } = await userApi.updateUser(params)
+        if (msgCode === 200) {
+            dispatch('getList', {
+                pageIndex: 1,
+                pageSize: 10,
+            })
+        }
+        return {
+            msgCode,
+            message,
+        }
+    },
+    async deleteUser({ dispatch }, params) {
+        const { msgCode, message } = await userApi.deleteUser(params)
+        if (msgCode === 200) {
+            dispatch('getList', {
+                pageIndex: 1,
+                pageSize: 10,
+            })
+        }
+        return {
+            msgCode,
+            message,
+        }
+    },
 }
 export default {
     namespaced: true,

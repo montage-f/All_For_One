@@ -13,5 +13,6 @@ module.exports = (router) => {
     router.post('/web/user/addImg', verifyToken, uploadWebUserImg.single('file'), upload.webImg)
     router.post('/web/user/add', verifyToken, user.webAdd)
     router.put('/web/user/update', verifyToken, user.webUpdate)
+    router.delete('/web/user/delete', verifyToken, user.webDelete)
     
 }

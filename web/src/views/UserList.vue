@@ -10,6 +10,11 @@
                 height="100%"
                 border
             >
+                <el-table-column
+                    label="序号"
+                    type="index"
+                    width="50">
+                </el-table-column>
                 <TableColumn
                     v-for="(item,index) of tableColumnInfo"
                     v-bind="item"
@@ -17,8 +22,12 @@
                 >
                     <template v-slot:img="{row}" v-if="item.slotName">
                         <div>
-                            <img :src="row.img" alt="" width="50px" height="50px" style="border-radius:50%;"
-                                 v-if="row.img">
+                            <img
+                                v-if="row.img"
+                                :src="row.img" alt=""
+                                width="50px" height="50px"
+                                style="border-radius:50%;"
+                            >
                         </div>
                     </template>
 
@@ -167,7 +176,6 @@
                     ],
                     name: [
                         { required: true, message: '请输入姓名', trigger: 'blur' },
-                        { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
                     ],
                 },
                 dialogTitle: '新增',
@@ -198,6 +206,8 @@
             ...mapActions([
                 'user/getList',
                 'user/addUser',
+                'user/updateUser',
+                'user/deleteUser',
             ]),
             async onSubmit() {
                 let isValidate = await this.$formValidate('userForm')
@@ -217,19 +227,27 @@
             },
             onEmitUser(row) {
                 this.userForm = {
+                    ...this.userForm,
                     ...row,
                 }
                 this.isAddUser = true
                 this.dialogTitle = '编辑'
             },
-            onDeleteUser(row) {
-                console.log(row)
+            async onDeleteUser(row) {
+                const isConfirm = await this.$confirm()
+                if (!isConfirm) return
+                const { userId } = row
+                const { msgCode, message } = await this['user/deleteUser']({ userId })
+                if (msgCode === 200) {
+                    this.$message.success(message)
+                    return
+                }
+                this.$message.success(message)
             },
             onAddUser() {
                 this.isAddUser = true
                 this.dialogTitle = '新增'
             },
-
             handleSizeChange(val) {
                 this.pageSize = val
                 this['user/getList']({

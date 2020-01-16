@@ -13,3 +13,11 @@ export const getList = async (params) => {
 export const addUser = async (params) => {
     return await http.post('/api/web/user/add', params)
 }
+
+export const updateUser = async (params) => {
+    return await http.put('/api/web/user/update', params)
+}
+
+export const deleteUser = async (params) => {
+    return await http.delete('/api/web/user/delete', { data: params })
+}
