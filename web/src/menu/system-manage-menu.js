@@ -3,20 +3,36 @@
  */
 export default [
     {
-        name: '权限管理',
+        id: 1,
+        parentId: 0,
+        icon: 'el-icon-menu',
+        title: '权限管理',
+        pathName: 'system-manage',
         children: [
             {
-                name: '用户列表',
+                id: 2,
+                parentId: 1,
+                icon: 'el-icon-menu',
+                title: '用户列表',
+                pathName: 'user-list',
             },
             {
-                name: '菜单列表',
+                id: 3,
+                parentId: 1,
+                icon: 'el-icon-menu',
+                title: '菜单列表',
+                pathName: 'menu-list',
             },
             {
-                name: '角色列表',
+                id: 4,
+                parentId: 1,
+                icon: 'el-icon-menu',
+                title: '角色列表',
+                pathName: 'role-list',
             },
         ],
     },
     {
-        name: '系统监控',
+        title: '系统监控',
     },
 ]
