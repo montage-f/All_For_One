@@ -2,11 +2,16 @@
 <template>
     <div class="LeftNav">
         <div class="left">
-            <LeftMenu
-                :listInfo="SystemManageMenu"
-            >
-
-            </LeftMenu>
+            <el-menu
+                class="LeftMenu"
+                :default-active="activeIndex">
+                <LeftMenuItem
+                    v-for="(item,index) of SystemManageMenu"
+                    v-bind="item"
+                    :key="index"
+                >
+                </LeftMenuItem>
+            </el-menu>
         </div>
         <div class="content">
             <router-view></router-view>
@@ -15,13 +20,13 @@
 </template>
 
 <script>
-    import LeftMenu from '@comp/common/LeftMenu'
+    import LeftMenuItem from '@comp/common/LeftMenuItem'
     import SystemManageMenu from '@/menu/system-manage-menu'
 
     export default {
         name: 'LeftNav',
         components: {
-            LeftMenu,
+            LeftMenuItem,
         },
         data() {
             return {
@@ -32,9 +37,8 @@
         },
         computed: {
             activeIndex() {
-                console.log(this.$route)
-                console.log(this.$router)
-                return '1-1'
+                const { name } = this.$route
+                return name
             },
         },
         methods: {},
