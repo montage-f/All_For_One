@@ -13,6 +13,7 @@
     </el-submenu>
     <el-menu-item
         v-else
+        class="Item"
         :index="pathName">
         <router-link :to="{name:pathName}" tag="div" slot="title">
             <i :class="icon"></i>
@@ -42,6 +43,10 @@
 </script>
 
 <style scoped lang="less">
-    .LeftMenuItem {
+    .Item {
+        &.el-menu-item {
+            min-width: 0;
+            padding: 0;
+        }
     }
 </style>

@@ -55,6 +55,10 @@
             width: 160px;
             border-right: 1px solid #ccc;
             box-sizing: border-box;
+
+            .LeftMenu {
+                border-right: 0;
+            }
         }
 
         .content {
