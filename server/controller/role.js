@@ -24,11 +24,12 @@ module.exports = {
         })
     },
     async remove(roleId) {
+        console.log(roleId)
         return await Role.deleteOne({ _id: roleId })
     },
     async update(params) {
-        const { roleId, name } = params
-        return await Role.update({ roleId }, { name })
+        const { roleId, name, remark } = params
+        return await Role.updateOne({ _id: roleId }, { name, remark })
     },
     async count() {
         return await Role.countDocuments()

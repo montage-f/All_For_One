@@ -26,9 +26,9 @@
                     label="操作"
                     width="150"
                 >
-                    <template>
-                        <el-button type="text">编辑</el-button>
-                        <el-button type="text">删除</el-button>
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="onEdit(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="onDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -44,7 +44,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="新增角色" :visible.sync="dialogFormVisible">
+        <el-dialog :title="`${dialogTitle}角色`" :visible.sync="dialogFormVisible" @close="$formReset('roleForm')">
             <el-form
                 label-width="100px"
                 ref="roleForm"
@@ -77,6 +77,7 @@
         },
         data() {
             return {
+                dialogTitle: '',
                 tableColumnInfo: [
                     {
                         label: '角色名称',
@@ -126,13 +127,39 @@
             ...mapActions([
                 'role/add',
                 'role/getList',
+                'role/update',
+                'role/remove',
             ]),
             addRole() {
+                this.dialogTitle = '新增'
                 this.dialogFormVisible = true
+            },
+            onEdit(row) {
+                this.dialogTitle = '编辑'
+                this.dialogFormVisible = true
+                this.roleForm = {
+                    ...row,
+                }
+            },
+            async onDelete(row) {
+                const { roleId } = row
+                if (await this.$confirm()) {
+                    let { msgCode, message } = await this['role/remove']({ roleId })
+                    if (msgCode === 200) {
+                        this.$message.success(message)
+                        return
+                    }
+                    this.$message.error(message)
+                }
             },
             async onSubmit() {
                 if (await this.$formValidate('roleForm')) {
-                    const { msgCode, message } = await this['role/add'](this.roleForm)
+                    const obj = {
+                        '新增': async () => await this['role/add'](this.roleForm),
+                        '编辑': async () => await this['role/update'](this.roleForm),
+                    }
+
+                    const { msgCode, message } = await obj[this.dialogTitle]()
                     if (msgCode === 200) {
                         this.dialogFormVisible = false
                         this.$message.success(message)

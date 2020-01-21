@@ -25,7 +25,21 @@ const actions = {
         if (msgCode === 200) {
             commit('setList', data)
         }
-        return { msgCode, message, data }
+        return { msgCode, message }
+    },
+    async update({ dispatch }, params) {
+        const { msgCode, message } = await roleApi.update(params)
+        if (msgCode === 200) {
+            dispatch('getList')
+        }
+        return { msgCode, message }
+    },
+    async remove({ dispatch }, params) {
+        const { msgCode, message } = await roleApi.remove(params)
+        if (msgCode === 200) {
+            dispatch('getList')
+        }
+        return { msgCode, message }
     },
 }
 const getters = {

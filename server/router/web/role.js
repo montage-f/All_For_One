@@ -47,7 +47,13 @@ module.exports = {
         response.body = {
             msgCode: 200,
             data: {
-                list: result,
+                list: result.map(item => ({
+                    roleId: item.id,
+                    name: item.name,
+                    remark: item.remark,
+                    createTime: item.createTime,
+                    updateTime: item.updateTime,
+                })),
                 count,
             },
         }
@@ -55,6 +61,7 @@ module.exports = {
     async remove(ctx) {
         const { request, response } = ctx
         const { body: { roleId } } = request
+        console.log(roleId)
         const { deletedCount } = await role.remove(roleId)
         if (deletedCount) {
             response.body = {
@@ -70,8 +77,8 @@ module.exports = {
     },
     async update(ctx, next) {
         const { request, response } = ctx
-        const { body: { roleId, name } } = request
-        const { nModified } = await role.update({ roleId, name })
+        const { body: { roleId, name, remark = '' } } = request
+        const { nModified } = await role.update({ roleId, name, remark })
         if (nModified) {
             response.body = {
                 msgCode: 200,
