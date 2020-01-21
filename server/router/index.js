@@ -14,8 +14,6 @@ const user = require('./user')
 const upload = require('./upload')
 const album = require('./album')
 const photos = require('./photos')
-const role = require('./role')
-const userRole = require('./userRole')
 
 const { uploads, verifyToken } = require('../config')
 
@@ -44,14 +42,7 @@ router.post('/photos/add', verifyToken, uploadPhotosImg.single('file'), photos.a
 router.put('/photos/update', verifyToken, photos.update)
 router.delete('/photos/delete', verifyToken, photos.delete)
 
-// 角色
-router.post('/role/add', verifyToken, role.add)
-router.get('/role/list', verifyToken, role.list)
-router.put('/role/update', verifyToken, role.update)
-router.delete('/role/remove', verifyToken, role.remove)
 
-// 用户_角色 设定用户与角色之间的关系
-router.post('/userRole/add', userRole.add)
 
 module.exports = (app) => {
     app.use(router.routes())

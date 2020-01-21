@@ -7,6 +7,7 @@ const Schema = mongoose.Schema
 
 const roleSchema = new Schema({
     name: String, // 角色名称
+    remark: String, // 备注
     updateTime: Date, // 更新时间
     createTime: Date, // 用户创建时间
 })

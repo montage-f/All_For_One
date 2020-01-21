@@ -15,9 +15,10 @@ module.exports = {
         }
     },
     async add(params) {
-        const { name, createTime, updateTime } = params
+        const { name, remark, createTime, updateTime } = params
         return await Role.create({
             name,
+            remark,
             createTime,
             updateTime,
         })
@@ -28,5 +29,8 @@ module.exports = {
     async update(params) {
         const { roleId, name } = params
         return await Role.update({ roleId }, { name })
+    },
+    async count() {
+        return await Role.countDocuments()
     },
 }

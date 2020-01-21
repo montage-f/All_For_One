@@ -31,11 +31,11 @@ const elementUi = [
     Option, Upload,
 ]
 
-export { http, storage, formRules }
+export { http, storage, formRules, formatTime }
 
 export default (Vue) => {
     // 设置所有element的组件的大小为small
-    Vue.prototype.$ELEMENT = { size: 'small' };
+    Vue.prototype.$ELEMENT = { size: 'small' }
     elementUi.forEach((tem) => {
         Vue.use(tem)
     })

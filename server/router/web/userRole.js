@@ -1,7 +1,7 @@
 /**
  * Created by MonTage_fz on 2020/1/9
  */
-const { userRole } = require('../controller')
+const { userRole } = require('../../controller')
 module.exports = {
     async add(ctx) {
         const { request, response } = ctx
