@@ -64,7 +64,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog :title="`${dialogTitle}用户`" :visible.sync="isAddUser" @close="$formReset('userForm')" width="30%">
+        <el-dialog :title="`${dialogTitle}用户`" :visible.sync="isAddUser" @close="isAddUser=false" width="30%">
             <el-form ref="userForm" :model="userForm" :rules="rules" label-position="left" label-width="100px">
                 <el-form-item label="用户头像" prop="img">
                     <el-upload
@@ -90,8 +90,12 @@
                 </el-form-item>
                 <el-form-item label="所属角色" prop="roleIds">
                     <el-select v-model="userForm.roleIds" multiple placeholder="请选择角色">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
+                        <el-option
+                            v-for="item of roleList"
+                            :label="item.name"
+                            :value="item.roleId"
+                            :key="item.roleId"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="管理员" prop="isAdmin">
@@ -184,20 +188,32 @@
                 pageIndex: this.pageIndex,
                 pageSize: this.pageSize,
             })
+            this['role/getList']()
         },
         computed: {
             ...mapState({
                 userListInfo: (state) => state.user.userListInfo,
+                userList: (state) => state.user.userListInfo.list,
+                userCount: (state) => state.user.userListInfo.count,
+                roleList: (state) => state.role.roleListInfo.list,
             }),
-            userList() {
-                return this.userListInfo.list
-            },
-            userCount() {
-                return this.userListInfo.count
-            },
             token() {
                 const { token } = this.$storage.get('userInfo')
                 return token
+            },
+        },
+        watch: {
+            isAddUser(isTrue) {
+                if (!isTrue) {
+                    this.userForm = {
+                        username: '',
+                        name: '',
+                        password: '',
+                        roleIds: [],
+                        isAdmin: 0,
+                        img: '',
+                    }
+                }
             },
         },
         methods: {
@@ -206,6 +222,7 @@
                 'user/addUser',
                 'user/updateUser',
                 'user/deleteUser',
+                'role/getList',
             ]),
             async onSubmit() {
                 let isValidate = await this.$formValidate('userForm')
@@ -216,7 +233,6 @@
                 }
                 const { msgCode, message } = await dialogTitle[this.dialogTitle]()
                 if (msgCode === 200) {
-                    this.$formReset('userForm')
                     this.isAddUser = false
                     this.$message.success(message)
                     return
@@ -224,12 +240,12 @@
                 this.$message.success(message)
             },
             onEmitUser(row) {
+                this.dialogTitle = '编辑'
+                this.isAddUser = true
                 this.userForm = {
                     ...this.userForm,
                     ...row,
                 }
-                this.isAddUser = true
-                this.dialogTitle = '编辑'
             },
             async onDeleteUser(row) {
                 const isConfirm = await this.$confirm()
@@ -271,16 +287,16 @@
             },
             // 图像上传之前校验
             beforeAvatarUpload(file) {
-                const isJPG = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(file.type);
-                const isLt2M = file.size / 1024 / 1024 < 2;
+                const isJPG = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(file.type)
+                const isLt2M = file.size / 1024 / 1024 < 2
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 .png, .jpeg, .jpg, .gif 格式!');
+                    this.$message.error('上传头像图片只能是 .png, .jpeg, .jpg, .gif 格式!')
                 }
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    this.$message.error('上传头像图片大小不能超过 2MB!')
                 }
-                return isJPG && isLt2M;
+                return isJPG && isLt2M
             },
 
         },

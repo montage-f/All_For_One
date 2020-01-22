@@ -40,11 +40,11 @@
                 :page-sizes="[10,20,50,100]"
                 :page-size="10"
                 layout="total, sizes, prev, pager, next, jumper"
-                :total="roleCount">
+                :total="count">
             </el-pagination>
         </div>
 
-        <el-dialog :title="`${dialogTitle}角色`" :visible.sync="dialogFormVisible" @close="$formReset('roleForm')">
+        <el-dialog :title="`${dialogTitle}角色`" :visible.sync="dialogFormVisible" @close="dialogFormVisible=false">
             <el-form
                 label-width="100px"
                 ref="roleForm"
@@ -119,8 +119,15 @@
                 count: 'role/count',
                 list: 'role/list',
             }),
-            roleCount() {
-                return 1
+        },
+        watch: {
+            dialogFormVisible(isTrue) {
+                if (!isTrue) {
+                    this.roleForm = {
+                        name: '',
+                        remark: '',
+                    }
+                }
             },
         },
         methods: {

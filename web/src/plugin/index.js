@@ -7,7 +7,6 @@ import storage from './storage' // 本地存储
 import formValidate from './formValidate' // 表单验证
 import formatTime from './formatTime' // 格式化时间
 import * as formRules from './formRules' // 表单验证
-import formReset from './formReset' // 表单重置
 import * as MessageBox from './messageBox' // messageBox 下面的组件
 
 
@@ -44,6 +43,5 @@ export default (Vue) => {
     Vue.prototype.$formValidate = formValidate
     Vue.prototype.$message = Message
     Vue.prototype.$formatTime = formatTime
-    Vue.prototype.$formReset = formReset
     Vue.prototype.$confirm = MessageBox.confirm
 }

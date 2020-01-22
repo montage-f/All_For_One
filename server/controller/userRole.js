@@ -11,4 +11,16 @@ module.exports = {
             createTime: nowDate,
         })))
     },
+    async list({ userId, roleId }) {
+        if (userId) return await UserRole.find({ userId })
+        if (roleId) return await UserRole.find({ roleId })
+    },
+    async update({ userId, roleIds }) {
+        console.log(userId, roleIds)
+        return await Promise.all(
+            roleIds.map(
+                async (roleId) => await UserRole.updateOne({ userId }, { roleId }),
+            ),
+        )
+    },
 }

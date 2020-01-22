@@ -122,13 +122,21 @@ module.exports = {
     async webUpdate(ctx) {
         const { request, response } = ctx
         const { body } = request
-        const { img, username, name } = body
+        const { userId, username, img, roleIds = [], isAdmin = 0, name = '' } = body
         if (img && username && name) {
             const dateNow = Date.now()
             const { nModified } = await user.webUpdate({
-                ...body,
+                userId,
+                username,
+                name,
+                img,
+                isAdmin,
                 updateTime: dateNow,
             })
+            if (roleIds.length) {
+                const data = await userRole.update({ userId, roleIds })
+                console.log(data)
+            }
             if (nModified) {
                 response.body = {
                     msgCode: 200,
@@ -208,25 +216,26 @@ module.exports = {
     async list(ctx) {
         const { request, response } = ctx
         const { query: { pageIndex, pageSize } } = request
-        let result;
+        let result
         if (pageIndex && pageSize) {
             result = await user.list(pageIndex, pageSize)
         } else {
             result = await user.list()
         }
         const count = await user.count()
-        const list = result.map((item) => {
+        const list = await Promise.all(result.map(async (item) => {
+            const roleIds = await userRole.list({ userId: item._id })
             return {
                 username: item.username,
                 name: item.name,
-                img: item.img,
+                img: item.img || `http://127.0.0.1:3000/user/timg.jpg`,
                 isAdmin: item.isAdmin,
                 updateTime: item.updateTime,
                 createTime: item.createTime,
                 userId: item._id,
-                roleIds: [],
+                roleIds,
             }
-        })
+        }))
         response.body = {
             msgCode: 200,
             data: {
