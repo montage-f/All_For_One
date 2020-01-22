@@ -34,6 +34,10 @@
                         {{ row.isAdmin?'是':'否' }}
                     </template>
 
+                    <template v-if="item.slotName" v-slot:userRole="{row}">
+                        {{ row.userRole.map(item=>item.roleName).join(',') }}
+                    </template>
+
                     <template v-if="item.slotName" v-slot:createTime="{row}">
                         {{ $formatTime(row.createTime) }}
                     </template>
@@ -148,6 +152,7 @@
                     {
                         prop: 'userRole',
                         label: '用户角色',
+                        slotName: 'userRole',
                     },
                     {
                         prop: 'createTime',
@@ -243,8 +248,8 @@
                 this.dialogTitle = '编辑'
                 this.isAddUser = true
                 this.userForm = {
-                    ...this.userForm,
                     ...row,
+                    roleIds: row.userRole.map(item => item.roleId),
                 }
             },
             async onDeleteUser(row) {

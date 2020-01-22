@@ -2,7 +2,7 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { user, userRole } = require('../controller')
+const { user, userRole, role } = require('../controller')
 const { jwt, HOST, PORT } = require('../config')
 
 module.exports = {
@@ -224,7 +224,10 @@ module.exports = {
         }
         const count = await user.count()
         const list = await Promise.all(result.map(async (item) => {
+            // 去查询该用户下面所对应的角色
             const roleIds = await userRole.list({ userId: item._id })
+            const roleInfo = await role.getRoleName(roleIds.map(item => item.roleId))
+            console.log(roleInfo)
             return {
                 username: item.username,
                 name: item.name,
@@ -233,7 +236,10 @@ module.exports = {
                 updateTime: item.updateTime,
                 createTime: item.createTime,
                 userId: item._id,
-                roleIds,
+                userRole: roleInfo.map(item => ({
+                    roleId: item._id,
+                    roleName: item.name,
+                })),
             }
         }))
         response.body = {

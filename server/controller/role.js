@@ -34,4 +34,8 @@ module.exports = {
     async count() {
         return await Role.countDocuments()
     },
+    // 获取权限名称
+    async getRoleName(roleIds) {
+        return await Promise.all(roleIds.map(async (roleId) => await Role.findOne({ _id: roleId })))
+    },
 }
