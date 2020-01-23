@@ -15,12 +15,23 @@ module.exports = {
         if (userId) return await UserRole.find({ userId })
         if (roleId) return await UserRole.find({ roleId })
     },
-    async update({ userId, roleIds }) {
-        console.log(userId, roleIds)
-        return await Promise.all(
-            roleIds.map(
-                async (roleId) => await UserRole.updateOne({ userId }, { roleId }),
-            ),
-        )
+    async updateUserRole({ userId, roleIds }) {
+        const createTime = Date.now()
+        const userRoleList = await UserRole.find({ userId })
+        // 库里面已经存在的
+        const hasRoleIds = userRoleList.map((item) => item.roleId)
+        hasRoleIds.forEach(async (roleId) => {
+            // 如果库里面的roleId不在传进来的roleIds里面, 那么就把它删除掉
+            if (!roleIds.includes(roleId)) {
+                await UserRole.deleteOne({ userId, roleId })
+            }
+        })
+        
+        roleIds.forEach(async (roleId) => {
+            // 如果传入进来的roleId不在库的roleIds里面, 那么就把添加这个roleId
+            if (!hasRoleIds.includes(roleId)) {
+                await UserRole.create({ userId, roleId, createTime })
+            }
+        })
     },
 }

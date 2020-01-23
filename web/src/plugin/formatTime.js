@@ -3,7 +3,7 @@
  */
 import moment from 'moment'
 
-export default (timer, format = 'YYYY-MM-DD HH:MM:ss') => {
+export default (timer, format = 'YYYY-MM-DD HH:mm:ss') => {
     if (timer) {
         return moment(timer).format(format)
     }

@@ -125,6 +125,7 @@ module.exports = {
         const { userId, username, img, roleIds = [], isAdmin = 0, name = '' } = body
         if (img && username && name) {
             const dateNow = Date.now()
+            console.log(dateNow)
             const { nModified } = await user.webUpdate({
                 userId,
                 username,
@@ -133,10 +134,11 @@ module.exports = {
                 isAdmin,
                 updateTime: dateNow,
             })
-            if (roleIds.length) {
-                const data = await userRole.update({ userId, roleIds })
-                console.log(data)
-            }
+            // 如果选中的范围是A, 已经存在的范围是B,
+            // 如果B里面的有一项不在A里面, 那么就要删除这一项
+            // 如果A里面的有一项不在B里面, 那么就要添加这一项
+            // 用于更新一个用户对应多个角色
+            userRole.updateUserRole({ userId, roleIds })
             if (nModified) {
                 response.body = {
                     msgCode: 200,
@@ -227,7 +229,6 @@ module.exports = {
             // 去查询该用户下面所对应的角色
             const roleIds = await userRole.list({ userId: item._id })
             const roleInfo = await role.getRoleName(roleIds.map(item => item.roleId))
-            console.log(roleInfo)
             return {
                 username: item.username,
                 name: item.name,
