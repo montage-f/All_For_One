@@ -20,8 +20,8 @@ export default [
                 id: 3,
                 parentId: 1,
                 icon: 'el-icon-menu',
-                title: '菜单列表',
-                pathName: 'menu-list',
+                title: '权限列表',
+                pathName: 'power-list',
             },
             {
                 id: 4,

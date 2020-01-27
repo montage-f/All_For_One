@@ -7,7 +7,7 @@ const { uploads, verifyToken } = require('../../config')
 const upload = require('../upload')
 const user = require('../user')
 const role = require('./role')
-const userRole = require('./userRole')
+const access = require('./access')
 
 module.exports = (router) => {
     // 上传图片, 放到webUser文件夹下面
@@ -23,6 +23,9 @@ module.exports = (router) => {
     router.put('/web/role/update', verifyToken, role.update)
     router.delete('/web/role/remove', verifyToken, role.remove)
     
-    // 用户_角色 设定用户与角色之间的关系
-    router.post('/userRole/add', userRole.add)
+    // 权限
+    router.post('/web/access/add', verifyToken, access.add)
+    router.get('/web/access/list', verifyToken, access.list)
+    router.put('/web/access/update', verifyToken, access.update)
+    router.delete('/web/access/remove', verifyToken, access.remove)
 }

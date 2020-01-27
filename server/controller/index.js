@@ -4,8 +4,10 @@
 const role = require('./role')
 const user = require('./user')
 const userRole = require('./userRole')
+const access = require('./access')
 module.exports = {
     role,
     user,
     userRole,
+    access
 }

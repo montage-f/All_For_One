@@ -49,12 +49,12 @@ const routes = [
                         component: () => import('@views/UserList'),
                     },
                     {
-                        path: 'menu-list',
-                        name: 'menu-list',
+                        path: 'power-list',
+                        name: 'power-list',
                         meta: {
                             title: '菜单列表',
                         },
-                        component: () => import('@views/MenuList'),
+                        component: () => import('@views/PowerList'),
                     },
                     {
                         path: 'role-list',

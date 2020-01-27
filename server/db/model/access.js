@@ -7,7 +7,7 @@ const Schema = mongoose.Schema
 
 const accessSchema = new Schema({
     title: String, // 权限名称
-    urls: String, // 页面对应的url
+    url: String, // 页面对应的url
     createTime: Date,
     updateTime: Date,
 })
