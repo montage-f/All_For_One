@@ -15,7 +15,7 @@ import {
     Form, FormItem, Input,
     Table, TableColumn, Button,
     Pagination, Dialog, Select,
-    Option, Upload,
+    Option, Upload, Tree,
     
     // 组件直接调用
     Message,
@@ -27,7 +27,7 @@ const elementUi = [
     Form, FormItem, Input,
     Table, TableColumn, Button,
     Pagination, Dialog, Select,
-    Option, Upload,
+    Option, Upload, Tree,
 ]
 
 export { http, storage, formRules, formatTime }

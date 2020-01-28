@@ -57,6 +57,20 @@
                 <el-form-item label="备注" prop="remark">
                     <el-input v-model.trim="roleForm.remark"></el-input>
                 </el-form-item>
+                <el-form-item label="功能权限" prop="menuPower">
+                    <el-input v-model.trim="roleForm.menuPower" placeholder="输入关键字进行过滤"></el-input>
+                    <div class="power-list">
+                        <el-tree
+                            :props="props"
+                            :data="powerList"
+                            ref="tree"
+                            show-checkbox
+                            :filter-node-method="filterNode"
+                            @check-change="handleCheckChange">
+                        </el-tree>
+
+                    </div>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -100,6 +114,7 @@
                 roleForm: {
                     name: '',
                     remark: '',
+                    menuPower: '',
                 },
                 rules: {
                     name: [
@@ -109,15 +124,22 @@
                 },
                 pageSize: 10,
                 pageIndex: 1,
+
+                props: {
+                    label: 'title',
+                    children: 'children',
+                },
             }
         },
         created() {
             this['role/getList']()
+            this['power/getList']()
         },
         computed: {
             ...mapGetters({
                 count: 'role/count',
                 list: 'role/list',
+                powerList: 'power/list',
             }),
         },
         watch: {
@@ -129,6 +151,9 @@
                     }
                 }
             },
+            ['roleForm.menuPower'](val) {
+                this.$refs.tree && this.$refs.tree.filter(val)
+            },
         },
         methods: {
             ...mapActions([
@@ -136,6 +161,7 @@
                 'role/getList',
                 'role/update',
                 'role/remove',
+                'power/getList',
             ]),
             addRole() {
                 this.dialogTitle = '新增'
@@ -175,6 +201,11 @@
                     this.$message.error(message)
                 }
             },
+            handleCheckChange() {},
+            filterNode(value, data) {
+                if (!value) return true
+                return data.title.includes(value)
+            },
             handleSizeChange(val) {
                 this.pageSize = val
                 this['role/getList']({
@@ -203,7 +234,16 @@
 
         .el-dialog {
             .el-form-item {
-                max-width: 300px;
+                max-width: 400px;
+
+                .power-list {
+                    width: 100%;
+                    border: 1px solid #DCDFE6;
+                    border-radius: 4px;
+                    height: 200px;
+                    margin-top: 5px;
+                    overflow-y: auto;
+                }
             }
         }
     }
