@@ -78,9 +78,18 @@ const actions = {
         }
     },
 }
+const getters = {
+    username(state) {
+        return state.userInfo.username || storage.get('userInfo').username
+    },
+    userImg(state) {
+        return state.userInfo.img || storage.get('userInfo').img
+    },
+}
 export default {
     namespaced: true,
     state,
     mutations,
     actions,
+    getters,
 }
