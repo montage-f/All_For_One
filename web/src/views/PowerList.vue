@@ -133,6 +133,8 @@
             ...mapActions([
                 'power/getList',
                 'power/add',
+                'power/update',
+                'power/remove',
             ]),
             onAddPower() {
                 this.dialogTitle = '新增'
@@ -141,10 +143,20 @@
             onEmitPower(row) {
                 this.dialogTitle = '编辑'
                 this.isAddPower = true
-                console.log(row)
                 this.powerForm = { ...row }
             },
-            onDeletePower() {},
+            async onDeletePower(row) {
+                if (await this.$confirm()) {
+                    const { powerId } = row
+                    const { msgCode, message } = await this['power/remove']({ powerId })
+                    if (msgCode === 200) {
+                        this.$message.success(message)
+                        return
+                    }
+                    this.$message.error(message)
+                }
+
+            },
             async onSubmit() {
                 let isTrue = await this.$formValidate('powerForm')
                 if (isTrue) {

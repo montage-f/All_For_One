@@ -38,4 +38,11 @@ module.exports = {
     async count() {
         return await Access.countDocuments()
     },
+    async update(params) {
+        const { powerId: _id, ...rest } = params
+        return await Access.updateOne({ _id }, rest)
+    },
+    async remove({ powerId: _id }) {
+        return await Access.deleteOne({ _id })
+    },
 }

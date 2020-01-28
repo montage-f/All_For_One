@@ -61,7 +61,6 @@ module.exports = {
     async remove(ctx) {
         const { request, response } = ctx
         const { body: { roleId } } = request
-        console.log(roleId)
         const { deletedCount } = await role.remove(roleId)
         if (deletedCount) {
             response.body = {

@@ -57,9 +57,41 @@ module.exports = {
     async update(ctx) {
         const { request: { body }, response } = ctx
         const { powerId, title, url } = body
-        
+        const updateTime = Date.now()
+        const { nModified } = await access.update({ powerId, title, url, updateTime })
+        if (nModified) {
+            response.body = {
+                msgCode: 200,
+                message: '更新成功',
+            }
+            return
+        }
+        response.body = {
+            msgCode: 400,
+            message: '更新失败',
+        }
     },
     async remove(ctx) {
-    
+        const { request: { body }, response } = ctx
+        const { powerId } = body
+        if (powerId) {
+            const { deletedCount } = await access.remove({ powerId })
+            if (deletedCount) {
+                response.body = {
+                    msgCode: 200,
+                    message: '删除成功',
+                }
+                return
+            }
+            response.body = {
+                msgCode: 400,
+                message: '删除失败',
+            }
+        } else {
+            response.body = {
+                msgCode: 400,
+                message: '请传入powerId',
+            }
+        }
     },
 }
