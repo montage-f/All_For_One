@@ -1,11 +1,12 @@
 /**
  * Created by MonTage_fz on 2020/1/8
  */
-const { role } = require('../../controller')
+const { role, roleAccess } = require('../../controller')
 module.exports = {
     async add(ctx, next) {
         const { request, response } = ctx
-        const { body: { name, remark } } = request
+        const { body: { name, remark, powerIds } } = request
+        console.log(powerIds)
         if (name) {
             const result = await role.getOne(name)
             if (result) {
@@ -21,6 +22,12 @@ module.exports = {
                     createTime: dateNow,
                     updateTime: dateNow,
                 })
+                
+                // 关联角色Id和权限Id
+                if (powerIds.length) {
+                    roleAccess.add(roleId, powerIds)
+                }
+                
                 response.body = {
                     msgCode: 200,
                     message: '角色添加成功',

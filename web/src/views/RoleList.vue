@@ -58,7 +58,7 @@
                     <el-input v-model.trim="roleForm.remark"></el-input>
                 </el-form-item>
                 <el-form-item label="功能权限" prop="menuPower">
-                    <el-input v-model.trim="roleForm.menuPower" placeholder="输入关键字进行过滤"></el-input>
+                    <el-input v-model.trim="searchPower" placeholder="输入关键字进行过滤"></el-input>
                     <div class="power-list">
                         <el-tree
                             :props="props"
@@ -114,7 +114,7 @@
                 roleForm: {
                     name: '',
                     remark: '',
-                    menuPower: '',
+                    powerIds: [],
                 },
                 rules: {
                     name: [
@@ -125,6 +125,7 @@
                 pageSize: 10,
                 pageIndex: 1,
 
+                searchPower: '',
                 props: {
                     label: 'title',
                     children: 'children',
@@ -151,7 +152,7 @@
                     }
                 }
             },
-            ['roleForm.menuPower'](val) {
+            searchPower(val) {
                 this.$refs.tree && this.$refs.tree.filter(val)
             },
         },
@@ -201,7 +202,10 @@
                     this.$message.error(message)
                 }
             },
-            handleCheckChange() {},
+            handleCheckChange() {
+                const treeCheckNode = this.$refs.tree.getCheckedNodes()
+                this.roleForm.powerIds = treeCheckNode.map(item => item.powerId)
+            },
             filterNode(value, data) {
                 if (!value) return true
                 return data.title.includes(value)

@@ -4,12 +4,8 @@
 const { UserRole } = require('../db')
 module.exports = {
     async add(userId, roleIds) {
-        const nowDate = Date.now()
-        return await Promise.all(roleIds.map(async (roleId) => UserRole.create({
-            userId,
-            roleId,
-            createTime: nowDate,
-        })))
+        const createTime = Date.now()
+        roleIds.map((roleId) => UserRole.create({ userId, roleId, createTime }))
     },
     async list({ userId, roleId }) {
         if (userId) return await UserRole.find({ userId })

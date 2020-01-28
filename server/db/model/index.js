@@ -7,6 +7,7 @@ const Photos = require('./photos')
 const Role = require('./role')
 const UserRole = require('./user_role')
 const Access = require('./access')
+const RoleAccess = require('./role_access')
 
 module.exports = {
     User,
@@ -15,4 +16,5 @@ module.exports = {
     Role,
     UserRole,
     Access,
+    RoleAccess
 }
