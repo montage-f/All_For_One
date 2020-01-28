@@ -6,7 +6,6 @@ module.exports = {
     async add(ctx, next) {
         const { request, response } = ctx
         const { body: { name, remark, powerIds } } = request
-        console.log(powerIds)
         if (name) {
             const result = await role.getOne(name)
             if (result) {
