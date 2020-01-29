@@ -19,7 +19,9 @@ const { uploads, verifyToken } = require('../config')
 
 router.post('/user/register', user.register)
 router.post('/user/login', user.login)
-router.get('/user/info', verifyToken, user.info)
+// 获取用户的菜单
+router.get('/user/login', user.login)
+router.get('/user/menu', verifyToken, user.menu)
 router.put('/user/update', verifyToken, user.update)
 router.get('/user/list', verifyToken, user.list)
 router.delete('/user/remove', verifyToken, user.remove)
@@ -41,7 +43,6 @@ router.get('/photos/list', verifyToken, photos.list)
 router.post('/photos/add', verifyToken, uploadPhotosImg.single('file'), photos.add)
 router.put('/photos/update', verifyToken, photos.update)
 router.delete('/photos/delete', verifyToken, photos.delete)
-
 
 
 module.exports = (app) => {

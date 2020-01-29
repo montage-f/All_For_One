@@ -2,7 +2,7 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { user, userRole, role } = require('../controller')
+const { user, userRole, role, roleAccess } = require('../controller')
 const { jwt, HOST, PORT } = require('../config')
 
 module.exports = {
@@ -36,6 +36,27 @@ module.exports = {
                 message: '请输入用户名和密码',
             }
         }
+    },
+    async menu(ctx) {
+        const { response, userInfo } = ctx
+        const { userId } = userInfo
+        // 通过userId, 去找拥有的角色, 在通过角色去找拥有的权限
+        const roles = await userRole.list({ userId })
+        const access = await Promise.all(roles.map(async ({ roleId }) => {
+            return roleAccess.list(roleId)
+        }))
+        const menu = access.reduce((p, item) => {
+            p.push(...item)
+            return p
+        }, [])
+        console.log(menu)
+        response.body = {
+            msgCode: 200,
+            data: {
+                menu,
+            },
+        }
+        
     },
     async register(ctx) {
         const { request, response } = ctx

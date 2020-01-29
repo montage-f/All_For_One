@@ -8,6 +8,7 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
     import TopNav from '@comp/common/TopNav'
 
     export default {
@@ -18,7 +19,14 @@
         data() {
             return {}
         },
-        methods: {},
+        created() {
+            this['user/menu']()
+        },
+        methods: {
+            ...mapActions([
+                'user/menu',
+            ]),
+        },
     }
 </script>
 <style scoped lang="less">
