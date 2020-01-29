@@ -50,16 +50,21 @@ module.exports = {
             result = await role.getList()
         }
         const count = await role.count()
+        const list = await Promise.all(result.map(async item => {
+            const powerInfo = await roleAccess.list(item.id)
+            return {
+                roleId: item.id,
+                powerInfo,
+                name: item.name,
+                remark: item.remark,
+                createTime: item.createTime,
+                updateTime: item.updateTime,
+            }
+        }))
         response.body = {
             msgCode: 200,
             data: {
-                list: result.map(item => ({
-                    roleId: item.id,
-                    name: item.name,
-                    remark: item.remark,
-                    createTime: item.createTime,
-                    updateTime: item.updateTime,
-                })),
+                list,
                 count,
             },
         }

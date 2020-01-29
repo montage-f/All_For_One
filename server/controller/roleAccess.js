@@ -1,7 +1,7 @@
 /**
  * Created by montage_fz on 2020-01-28
  */
-const { RoleAccess } = require('../db')
+const { RoleAccess, Access } = require('../db')
 module.exports = {
     // 角色Id 与 权限Id 关联
     async add(roleId, accessIds) {
@@ -25,5 +25,16 @@ module.exports = {
             .forEach(async accessId => {
                 await RoleAccess.deleteOne({ roleId, accessId })
             })
+    },
+    async list(roleId) {
+        const roleAccess = await RoleAccess.find({ roleId })
+        return Promise.all(roleAccess.map(async (item) => {
+            const info = await Access.findOne({ _id: item.accessId })
+            return {
+                powerId: info._id,
+                title: info.title,
+                url: info.url,
+            }
+        }))
     },
 }

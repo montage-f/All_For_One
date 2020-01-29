@@ -63,6 +63,7 @@
                         <el-tree
                             :props="props"
                             :data="powerList"
+                            node-key="powerId"
                             ref="tree"
                             show-checkbox
                             :filter-node-method="filterNode"
@@ -149,7 +150,9 @@
                     this.roleForm = {
                         name: '',
                         remark: '',
+                        powerIds: [],
                     }
+                    this.$refs.tree.setCheckedKeys([])
                 }
             },
             searchPower(val) {
@@ -171,9 +174,13 @@
             onEdit(row) {
                 this.dialogTitle = '编辑'
                 this.dialogFormVisible = true
+                const powerIds = row.powerInfo.map(item => item.powerId)
                 this.roleForm = {
                     ...row,
                 }
+                this.$nextTick(() => {
+                    this.$refs.tree && this.$refs.tree.setCheckedKeys(powerIds)
+                })
             },
             async onDelete(row) {
                 const { roleId } = row
