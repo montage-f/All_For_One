@@ -5,7 +5,7 @@ const { role, roleAccess } = require('../../controller')
 module.exports = {
     async add(ctx, next) {
         const { request, response } = ctx
-        const { body: { name, remark, powerIds } } = request
+        const { body: { name, remark, powerIds = [] } } = request
         if (name) {
             const result = await role.getOne(name)
             if (result) {
@@ -14,12 +14,12 @@ module.exports = {
                     message: '当前角色已存在, 请更换角色名',
                 }
             } else {
-                const dateNow = Date.now()
+                const createTime = Date.now()
                 const { _id: roleId } = await role.add({
                     name,
                     remark,
-                    createTime: dateNow,
-                    updateTime: dateNow,
+                    createTime,
+                    updateTime: createTime,
                 })
                 
                 // 关联角色Id和权限Id
@@ -82,8 +82,12 @@ module.exports = {
     },
     async update(ctx, next) {
         const { request, response } = ctx
-        const { body: { roleId, name, remark = '' } } = request
+        const { body: { roleId, name, remark = '', powerIds = [] } } = request
         const { nModified } = await role.update({ roleId, name, remark })
+        // 有两个数组, A 为传入进来的数组, B 为已经存在的数组
+        // 如果 A里面存在 B里面不存在, 那么就要往B里面添加这一项
+        // 如果 A里面不存在 B里面存在, 那么就要删除B里面这一项
+        roleAccess.update(roleId, powerIds)
         if (nModified) {
             response.body = {
                 msgCode: 200,
