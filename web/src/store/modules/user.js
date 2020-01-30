@@ -7,7 +7,6 @@ import { storage } from '@plugin'
 const state = {
     userInfo: {},
     userListInfo: {},
-    menu: [],
 }
 const mutations = {
     setUserInfo(state, params) {
@@ -16,9 +15,6 @@ const mutations = {
     },
     setList(state, params) {
         state.userListInfo = params
-    },
-    setMenu(state, params) {
-        state.menu = params
     },
 }
 const actions = {
@@ -79,13 +75,6 @@ const actions = {
         return {
             msgCode,
             message,
-        }
-    },
-    async menu({ commit }) {
-        const { msgCode, data } = await userApi.menu()
-        console.log(data)
-        if (msgCode === 200) {
-            commit('setMenu', data)
         }
     },
 }

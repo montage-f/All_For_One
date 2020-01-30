@@ -37,7 +37,7 @@ module.exports = {
             }
         }
     },
-    async menu(ctx) {
+    menu: async function (ctx) {
         const { response, userInfo } = ctx
         const { userId } = userInfo
         // 通过userId, 去找拥有的角色, 在通过角色去找拥有的权限
@@ -45,11 +45,18 @@ module.exports = {
         const access = await Promise.all(roles.map(async ({ roleId }) => {
             return roleAccess.list(roleId)
         }))
-        const menu = access.reduce((p, item) => {
+        const menuAll = access.reduce((p, item) => {
             p.push(...item)
             return p
         }, [])
-        console.log(menu)
+        const obj = {}
+        const menu = menuAll.reduce((p, i) => {
+            obj[i.powerId] = !obj[i.powerId]
+            if (obj[i.powerId]) {
+                p.push(i)
+            }
+            return p
+        }, [])
         response.body = {
             msgCode: 200,
             data: {

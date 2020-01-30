@@ -33,8 +33,9 @@ instance.interceptors.response.use(
         const { data } = config
         const { msgCode, message } = data
         switch (msgCode) {
-            // 404 代表着token验证验证失败
+            // 404 代表着token验证验证失败, 移除旧的token, 然后重新登录
             case 404:
+                storage.remove('userInfo')
                 router.push('/login').catch((e) => {
                     console.log(e)
                 })

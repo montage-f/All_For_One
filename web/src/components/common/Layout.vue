@@ -20,11 +20,11 @@
             return {}
         },
         created() {
-            this['user/menu']()
+            this['menu/getList']()
         },
         methods: {
             ...mapActions([
-                'user/menu',
+                'menu/getList',
             ]),
         },
     }

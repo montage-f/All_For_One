@@ -18,11 +18,12 @@ module.exports = {
     },
     chainWebpack: (config) => {
         config.resolve.alias
-        .set('@', resolve('src'))
-        .set('@assets', resolve('src/assets'))
-        .set('@views', resolve('src/views'))
-        .set('@comp', resolve('src/components'))
-        .set('@plugin', resolve('src/plugin'))
-        .set('@api', resolve('src/api'))
+            .set('@', resolve('src'))
+            .set('@assets', resolve('src/assets'))
+            .set('@views', resolve('src/views'))
+            .set('@comp', resolve('src/components'))
+            .set('@plugin', resolve('src/plugin'))
+            .set('@api', resolve('src/api'))
+            .set('@store', resolve('src/store'))
     },
 }
