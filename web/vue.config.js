@@ -25,5 +25,6 @@ module.exports = {
             .set('@plugin', resolve('src/plugin'))
             .set('@api', resolve('src/api'))
             .set('@store', resolve('src/store'))
+            .set('@router', resolve('src/router'))
     },
 }

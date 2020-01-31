@@ -54,7 +54,7 @@
                     const { msgCode, message } = await this['user/login'](this.userInfo)
                     if (msgCode === 200) {
                         this.$message.success(message)
-                        this.$router.push('/')
+                        this.$router.push('/').catch((e) => {console.log(e)})
                     } else {
                         this.$message.error(message)
                     }

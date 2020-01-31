@@ -17,6 +17,7 @@ module.exports = {
             '@plugin': path.resolve('src/plugin'),
             '@utils': path.resolve('src/utils'),
             '@store': path.resolve('src/store'),
+            '@router': path.resolve('src/router'),
         },
     },
 }

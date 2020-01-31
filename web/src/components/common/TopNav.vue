@@ -46,12 +46,8 @@
             ...mapGetters({
                 username: 'user/username',
                 userImg: 'user/userImg',
+                topMenu: 'menu/top',
             }),
-            topMenu() {
-                const { options: { routes } } = this.$router
-                const [firstRoutes] = routes
-                return firstRoutes.children
-            },
             activeIndex() {
                 const { fullPath } = this.$route
                 return fullPath.split('/')[1]

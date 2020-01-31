@@ -16,13 +16,16 @@ const routes = [
 ]
 
 // 准备动态添加的路由
-const asyncRouters = [
+export const allRouter = [
     {
         path: '/',
         redirect: {
             name: 'meter-graph',
         },
         name: 'layout',
+        meta: {
+            title: '首页',
+        },
         component: Layout,
         children: [
             {
@@ -80,13 +83,17 @@ const asyncRouters = [
             },
         ],
     },
-    
     {
         path: '*',
+        name: '404',
+        meta: {
+            title: '错误页面',
+            isHide: true,
+        },
         component: () => import('@views/404'),
     },
 ]
-console.log(asyncRouters)
+
 const router = new VueRouter({
     routes,
 })
