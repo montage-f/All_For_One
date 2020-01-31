@@ -42,6 +42,7 @@ const actions = {
             const mainRouter = allRouter.find((item) => item.meta.title === '首页')
             const children = mainRouter.children
             allRouter[0].children = recursionRouter(menu, children)
+            
             router.addRoutes(allRouter)
             commit('setList', allRouter)
         }
