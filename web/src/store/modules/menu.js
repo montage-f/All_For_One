@@ -30,6 +30,7 @@ const state = {
 }
 const mutations = {
     setList(state, params) {
+        console.log(params)
         state.list = params
     },
 }
@@ -50,7 +51,7 @@ const actions = {
 }
 const getters = {
     top(state) {
-        return state.list.filter(item => !item.meta.isHide)
+        return state.list[0].children
     },
 }
 export default {

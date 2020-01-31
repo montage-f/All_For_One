@@ -2,7 +2,7 @@
  * Created by MonTage_fz on 2019/12/27
  */
 const { User } = require('../db')
-const { user, userRole, role, roleAccess } = require('../controller')
+const { user, userRole, role, roleAccess, access } = require('../controller')
 const { jwt, HOST, PORT } = require('../config')
 
 module.exports = {
@@ -40,23 +40,31 @@ module.exports = {
     menu: async function (ctx) {
         const { response, userInfo } = ctx
         const { userId } = userInfo
-        // 通过userId, 去找拥有的角色, 在通过角色去找拥有的权限
-        const roles = await userRole.list({ userId })
-        const access = await Promise.all(roles.map(async ({ roleId }) => {
-            return roleAccess.list(roleId)
-        }))
-        const menuAll = access.reduce((p, item) => {
-            p.push(...item)
-            return p
-        }, [])
-        const obj = {}
-        const menu = menuAll.reduce((p, i) => {
-            obj[i.powerId] = !obj[i.powerId]
-            if (obj[i.powerId]) {
-                p.push(i)
-            }
-            return p
-        }, [])
+        // 先检查该用户是不是拥有管理员权限
+        const isAdmin = await user.isAdmin(userId)
+        let menu
+        // 如果是管理员权限则直接返回权限列表
+        if (isAdmin) {
+            menu = await access.getList()
+        } else {
+            // 通过userId, 去找拥有的角色, 在通过角色去找拥有的权限
+            const roles = await userRole.list({ userId })
+            const access = await Promise.all(roles.map(async ({ roleId }) => {
+                return roleAccess.list(roleId)
+            }))
+            const menuAll = access.reduce((p, item) => {
+                p.push(...item)
+                return p
+            }, [])
+            const obj = {}
+            menu = menuAll.reduce((p, i) => {
+                obj[i.powerId] = !obj[i.powerId]
+                if (obj[i.powerId]) {
+                    p.push(i)
+                }
+                return p
+            }, [])
+        }
         response.body = {
             msgCode: 200,
             data: {
