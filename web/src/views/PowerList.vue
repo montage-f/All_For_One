@@ -8,6 +8,8 @@
             <el-table
                 :data="list"
                 border
+                row-key="powerId"
+                :tree-props="{children: 'children'}"
             >
                 <el-table-column
                     label="序号"
@@ -45,10 +47,32 @@
 
         <el-dialog :title="`${dialogTitle}权限`" :visible.sync="isAddPower" @close="isAddPower=false" width="30%">
             <el-form ref="powerForm" :model="powerForm" :rules="rules" label-position="left" label-width="100px">
-                <el-form-item label="权限标题" prop="title">
-                    <el-input v-model="powerForm.title" placeholder="请输入标题"></el-input>
+                <el-form-item label="节点名称" prop="title">
+                    <el-input v-model="powerForm.title" placeholder="请输入节点标题"></el-input>
                 </el-form-item>
-                <el-form-item label="url" prop="url">
+                <el-form-item label="上级节点" prop="upTitle">
+                    <el-popover
+                        placement="bottom"
+                        width="350"
+                        trigger="click"
+                        :visible-arrow="false"
+                    >
+                        <el-input v-model="searchUpTitle"></el-input>
+                        <el-tree
+                            :data="list"
+                            ref="tree"
+                            node-key="powerId"
+                            :props="defaultProps"
+                            :filter-node-method="filterNode"
+                            @node-click="handleNodeClick"
+                        ></el-tree>
+                        <el-input slot="reference"
+                                  v-model="powerForm.upTitle"
+                                  placeholder="请选择上级节点"
+                        ></el-input>
+                    </el-popover>
+                </el-form-item>
+                <el-form-item label="节点路由" prop="url">
                     <el-input v-model="powerForm.url" placeholder="请输入url"></el-input>
                 </el-form-item>
                 <el-form-item class="btn">
@@ -94,7 +118,10 @@
                 powerForm: {
                     title: '',
                     url: '',
+                    powerId: '',
+                    upTitle: '',
                 },
+                searchUpTitle: '',
                 rules: {
                     title: [
                         { required: true, message: '请输入权限标题', trigger: 'blur' },
@@ -105,6 +132,10 @@
                 },
                 isAddPower: false,
                 dialogTitle: '新增',
+                defaultProps: {
+                    children: 'children',
+                    label: 'title',
+                },
             }
         },
         created() {
@@ -119,8 +150,14 @@
                     this.powerForm = {
                         title: '',
                         url: '',
+                        pId: '',
+                        upTitle: '',
                     }
+                    this.searchUpTitle = ''
                 }
+            },
+            searchUpTitle(val) {
+                this.$refs.tree.filter(val)
             },
         },
         computed: {
@@ -143,7 +180,11 @@
             onEmitPower(row) {
                 this.dialogTitle = '编辑'
                 this.isAddPower = true
-                this.powerForm = { ...row }
+                this.powerForm = {
+                    ...row,
+                    upTitle: '',
+                    pId: '',
+                }
             },
             async onDeletePower(row) {
                 if (await this.$confirm()) {
@@ -175,13 +216,28 @@
                     this.$message.error('请完善表单信息')
                 }
             },
+            filterNode(value, data) {
+                if (!value) return true
+                return data.title.includes(value)
+            },
+            handleNodeClick(item) {
+                const { powerId, title } = item
+                this.powerForm.pId = powerId
+                this.powerForm.upTitle = title
+            },
             handleSizeChange(val) {
                 this.pageSize = val
-
+                this['power/getList']({
+                    pageIndex: this.pageIndex,
+                    pageSize: this.pageSize,
+                })
             },
             handleCurrentChange(val) {
                 this.pageIndex = val
-
+                this['power/getList']({
+                    pageIndex: this.pageIndex,
+                    pageSize: this.pageSize,
+                })
             },
         },
     }

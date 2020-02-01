@@ -1,12 +1,14 @@
 /**
  * Created by montage_fz on 2020-01-24
  */
+
 const { access } = require('../../controller')
+const { listToTree } = require('../../config')
 module.exports = {
     // 添加权限
     async add(ctx) {
         const { request: { body }, response } = ctx
-        const { title, url } = body
+        const { title, url, pId } = body
         const createTime = Date.now()
         if (title && url) {
             const hasTitleAndUrl = await access.findOne({ title, url })
@@ -17,7 +19,7 @@ module.exports = {
                     message: `该 ${ hasTitleAndUrl } 已存在, 请勿重复添加`,
                 }
             } else {
-                const { _id: accessId } = await access.add({ title, url, createTime, updateTime: createTime })
+                const { _id: accessId } = await access.add({ title, url, pId, createTime, updateTime: createTime })
                 response.body = {
                     msgCode: 200,
                     message: '添加成功',
@@ -43,13 +45,16 @@ module.exports = {
         response.body = {
             msgCode: 200,
             data: {
-                list: list.map(item => ({
-                    powerId: item._id,
-                    title: item.title,
-                    url: item.url,
-                    createTime: item.createTime,
-                    updateTime: item.updateTime,
-                })),
+                list: listToTree('powerId', 'pId',
+                    list.map(item => ({
+                        powerId: item._id,
+                        title: item.title,
+                        url: item.url,
+                        pId: item.pId,
+                        createTime: item.createTime,
+                        updateTime: item.updateTime,
+                    })),
+                ),
                 count,
             },
         }
