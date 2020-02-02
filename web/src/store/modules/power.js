@@ -43,15 +43,20 @@ const actions = {
         return { msgCode, message }
     },
 }
+// 用于递归循环格式化时间
+const formatList = (list = []) => {
+    list.forEach((item) => {
+        if (item.children) formatList(item.children)
+        item.createTime = formatTime(item.createTime)
+        item.updateTime = formatTime(item.updateTime)
+    })
+    return list
+}
 const getters = {
     list(state) {
         const list = state.powerListInfo.list
         if (list) {
-            return list.map(item => ({
-                ...item,
-                createTime: formatTime(item.createTime),
-                updateTime: formatTime(item.updateTime),
-            }))
+            return formatList(list)
         }
     },
     count(state) {

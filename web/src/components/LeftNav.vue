@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import LeftMenuItem from '@comp/common/LeftMenuItem'
     import SystemManageMenu from '@/menu/system-manage-menu'
 
@@ -36,9 +37,17 @@
         created() {
         },
         computed: {
+            ...mapGetters({
+                list: 'power/list',
+            }),
             activeIndex() {
+                console.log(this.list)
                 const { name } = this.$route
                 return name
+            },
+            leftMenu() {
+                console.log(this.list)
+                return []
             },
         },
         methods: {},

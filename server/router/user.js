@@ -3,7 +3,7 @@
  */
 const { User } = require('../db')
 const { user, userRole, role, roleAccess, access } = require('../controller')
-const { jwt, HOST, PORT } = require('../config')
+const { jwt, HOST, PORT, listToTree } = require('../config')
 
 module.exports = {
     async login(ctx) {
@@ -69,6 +69,16 @@ module.exports = {
             msgCode: 200,
             data: {
                 menu,
+                list: listToTree('powerId', 'pId',
+                    menu.map(item => ({
+                        powerId: item._id,
+                        title: item.title,
+                        path: item.url,
+                        pId: item.pId,
+                        createTime: item.createTime,
+                        updateTime: item.updateTime,
+                    })),
+                ),
             },
         }
         

@@ -126,9 +126,6 @@
                     title: [
                         { required: true, message: '请输入权限标题', trigger: 'blur' },
                     ],
-                    url: [
-                        { required: true, message: '请输入url', trigger: 'blur' },
-                    ],
                 },
                 isAddPower: false,
                 dialogTitle: '新增',

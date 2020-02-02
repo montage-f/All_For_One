@@ -6,13 +6,13 @@
             <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
                 <el-menu-item
                     v-for="item of topMenu"
-                    :index="item.name"
-                    :key="item.name">
+                    :index="item.path"
+                    :key="item.path">
                     <router-link
-                        :to="{name:item.name}"
+                        :to="{path:item.path}"
                         tag="div"
                     >
-                        {{ item.meta.title }}
+                        {{ item.title }}
                     </router-link>
                 </el-menu-item>
             </el-menu>
@@ -50,7 +50,10 @@
             }),
             activeIndex() {
                 const { fullPath } = this.$route
-                return fullPath.split('/')[1]
+                if (fullPath.match(/\/.+\//)) {
+                    return fullPath.match(/\/.+\//)[0].slice(0, -1)
+                }
+                return fullPath
             },
         },
         methods: {
