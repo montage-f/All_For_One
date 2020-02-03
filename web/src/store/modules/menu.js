@@ -48,11 +48,7 @@ const actions = {
         }
     },
 }
-const getters = {
-    top(state) {
-        return state.list
-    },
-}
+const getters = {}
 export default {
     namespaced: true,
     state,

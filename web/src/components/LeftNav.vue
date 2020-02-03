@@ -6,7 +6,7 @@
                 class="LeftMenu"
                 :default-active="activeIndex">
                 <LeftMenuItem
-                    v-for="(item,index) of SystemManageMenu"
+                    v-for="(item,index) of leftMenuList"
                     v-bind="item"
                     :key="index"
                 >
@@ -20,9 +20,8 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapState } from 'vuex'
     import LeftMenuItem from '@comp/common/LeftMenuItem'
-    import SystemManageMenu from '@/menu/system-manage-menu'
 
     export default {
         name: 'LeftNav',
@@ -30,24 +29,22 @@
             LeftMenuItem,
         },
         data() {
-            return {
-                SystemManageMenu,
-            }
+            return {}
         },
         created() {
         },
         computed: {
-            ...mapGetters({
-                list: 'power/list',
+            ...mapState({
+                menuList: (state) => state.menu.list,
             }),
-            activeIndex() {
-                console.log(this.list)
-                const { name } = this.$route
-                return name
+            leftMenuList() {
+                const { path } = this.$route
+                return this.menuList.find((item) => path.includes(item.path)).children
+
             },
-            leftMenu() {
-                console.log(this.list)
-                return []
+            activeIndex() {
+                const { path } = this.$route
+                return path
             },
         },
         methods: {},

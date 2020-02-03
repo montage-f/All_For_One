@@ -14,8 +14,8 @@
     <el-menu-item
         v-else
         class="Item"
-        :index="pathName">
-        <router-link :to="{name:pathName}" tag="div" slot="title">
+        :index="path">
+        <router-link :to="{path}" tag="div" slot="title">
             <i :class="icon"></i>
             {{ title }}
         </router-link>
@@ -29,7 +29,7 @@
         props: {
             children: Array,
             title: String,
-            pathName: String,
+            path: String,
             icon: String,
         },
         data() {

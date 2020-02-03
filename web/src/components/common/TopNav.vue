@@ -5,7 +5,7 @@
         <div class="content">
             <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
                 <el-menu-item
-                    v-for="item of topMenu"
+                    v-for="item of menuList"
                     :index="item.path"
                     :key="item.path">
                     <router-link
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapState } from 'vuex'
 
     export default {
         name: 'TopNav',
@@ -43,10 +43,12 @@
         created() {
         },
         computed: {
+            ...mapState({
+                menuList: (state) => state.menu.list,
+            }),
             ...mapGetters({
                 username: 'user/username',
                 userImg: 'user/userImg',
-                topMenu: 'menu/top',
             }),
             activeIndex() {
                 const { fullPath } = this.$route
