@@ -43,6 +43,8 @@ module.exports = {
         return await Access.updateOne({ _id }, rest)
     },
     async remove({ powerId: _id }) {
+        // 删除
+        await Access.deleteMany({ pId: _id })
         return await Access.deleteOne({ _id })
     },
 }
