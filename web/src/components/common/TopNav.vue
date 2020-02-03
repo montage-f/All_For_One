@@ -78,7 +78,7 @@
 
         .logo {
             width: 160px;
-            background: url("../../assets/img/logo.gif") no-repeat;
+            background: url("../../assets/img/logo.jpg") no-repeat;
             background-size: 100% 100%;
         }
 

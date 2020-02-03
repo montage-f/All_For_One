@@ -244,6 +244,8 @@
     @import "~@assets/css/tableCommon.less";
 
     .PowerList {
+        width: 100%;
+        height: 100%;
         .tableCommon();
 
         .el-dialog {
