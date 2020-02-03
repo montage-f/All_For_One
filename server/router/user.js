@@ -46,6 +46,14 @@ module.exports = {
         // 如果是管理员权限则直接返回权限列表
         if (isAdmin) {
             menu = await access.getList()
+            menu = menu.map(item => ({
+                powerId: item._id,
+                pId: item.pId,
+                url: item.url,
+                createTime: item.createTime,
+                updateTime: item.updateTime,
+                title: item.title,
+            }))
         } else {
             // 通过userId, 去找拥有的角色, 在通过角色去找拥有的权限
             const roles = await userRole.list({ userId })
@@ -71,10 +79,10 @@ module.exports = {
                 menu,
                 list: listToTree('powerId', 'pId',
                     menu.map(item => ({
-                        powerId: item._id,
+                        powerId: item.powerId,
                         title: item.title,
                         path: item.url,
-                        pId: item.pId,
+                        pId: item.pId || '0',
                         createTime: item.createTime,
                         updateTime: item.updateTime,
                     })),
